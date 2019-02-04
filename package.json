@@ -1,0 +1,29 @@
+{
+  "name": "log2",
+  "version": "1.0.0",
+  "description": "A logbook SPA that tries to simplify logging so much that it actually gets done",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode development",
+    "css-build": "node-sass --omit-source-map-url src/sass/main.scss dist/css/main.css"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/classnames": "^2.2.7",
+    "@types/react": "^16.8.1",
+    "@types/react-dom": "^16.0.11",
+    "node-sass": "^4.11.0",
+    "source-map-loader": "^0.2.4",
+    "typescript": "^3.3.1",
+    "webpack": "^4.29.1",
+    "webpack-cli": "^3.2.1"
+  },
+  "dependencies": {
+    "bulma": "^0.7.2",
+    "classnames": "^2.2.6",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0"
+  }
+}
