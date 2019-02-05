@@ -28,6 +28,7 @@ $input-shadow: none;
 // Import only what you need from Bulma
 @import "../../node_modules/bulma/sass/utilities/_all.sass";
 @import "../../node_modules/bulma/sass/base/_all.sass";
+@import "../../node_modules/bulma/sass/grid/_all.sass";
 @import "../../node_modules/bulma/sass/elements/button.sass";
 @import "../../node_modules/bulma/sass/elements/container.sass";
 @import "../../node_modules/bulma/sass/elements/form.sass";
@@ -35,3 +36,21 @@ $input-shadow: none;
 @import "../../node_modules/bulma/sass/components/navbar.sass";
 @import "../../node_modules/bulma/sass/layout/hero.sass";
 @import "../../node_modules/bulma/sass/layout/section.sass";
+
+@keyframes example {
+    0%   {background-color: blue;}
+    25%  {background-color: yellow;}
+    50%  {background-color: red;}
+    100% {background-color: green;}
+}
+
+  
+#test {
+    background-color: blue;
+    color: white;
+    
+    &.active {
+        animation-name: example;
+        animation-duration: 4s;
+    }
+}

@@ -1,0 +1,43 @@
+{
+    "users": [
+      { "id": 1, "name": "Niklas Andersson", "email": "niklaspandersson.se@gmail.com" }
+    ],
+    "posts": [
+        { 
+            "id": 1, 
+            "data": {
+                "weather": { "weather": "sun", "more-weather-data": "hello" },
+                "emo": "grinning",
+                "log": {
+                    "body": "log log log"
+                }
+            },
+            "time": "2019-02-05T13:42:07Z",
+            "userId": 1 
+        },
+        { 
+            "id": 2, 
+            "data": {
+                "weather": { "weather": "cloud", "more-weather-data": "hello" },
+                "emo": "unhappy",
+                "log": {
+                    "body": "log log log"
+                }
+            },
+            "time": "2019-02-04T10:52:07Z",
+            "userId": 1 
+        },
+        { 
+            "id": 3, 
+            "data": {
+                "weather": { "weather": "sun" },
+                "emo": "happy",
+                "log": {
+                    "body": "log log log"
+                }
+            },
+            "time": "2019-01165T09:10:07Z",
+            "userId": 1 
+        }
+    ]
+  }

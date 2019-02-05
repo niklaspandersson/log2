@@ -1,4 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import Application from "./Application";
 
-ReactDOM.render(<div />, document.getElementById("app"));
+document.addEventListener("DOMContentLoaded", () => {
+    ReactDOM.render(<Application />, document.getElementById("app"));
+});

@@ -1,3 +1,8 @@
-dist
+dist/js
+dist/css/main.css
+dist/font
 node_modules
-src/fontello
+src/fontello/css
+src/fontello/font
+src/fontello/*.txt
+src/fontello/*.html
