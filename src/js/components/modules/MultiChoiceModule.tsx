@@ -1,5 +1,6 @@
 import React from "react";
 import Panel, { PanelProps } from "../Panel";
+import Icon from "../Icon";
 import classnames from "classnames";
 
 export interface MultiChoiceModuleProps extends PanelProps {
@@ -34,8 +35,8 @@ const MultiChoiceModule: React.FunctionComponent<MultiChoiceModuleProps> = (prop
     const columnSize = getColumnSize(props.itemsPerRow);
 
     return  <Panel name={props.name}>
-                <div className={classnames({columns:true, "is-mobile": true, "is-multiline": props.choices.length > props.itemsPerRow })}>
-                    { props.choices.map((c,i) => <div key={i} className={classnames("column", "choice", columnSize)}>{c}</div> )}
+                <div className={classnames({columns:true, "is-vcentered": true, "is-mobile": true, "is-multiline": props.choices.length > props.itemsPerRow })}>
+                    { props.choices.map((c,i) => <div key={i} className={classnames("column", "choice", columnSize)}>{<Icon icon={c} />}</div> )}
                 </div>
             </Panel>
 }

@@ -18,8 +18,8 @@ export default class CreateLog extends React.Component<CreateLogProps, CreateLog
 
     render() {
         return  <div className="create-post">
-                    <MultiChoiceModule name="weather" choices={["sun", "cloud-sun", "cloud", "drizzle", "rain", "cloud-flash", "snow", "snow-heavy"]} itemsPerRow={4} />
-                    <MultiChoiceModule name="mood" choices={["grin", "happy", "sleep", "unhappy", "cry", "angry"]} itemsPerRow={3} />
+                    <MultiChoiceModule name="weather" choices={["sun", "cloud-sun", "cloud", "drizzle", "rain", "cloud-flash", "snow-alt", "snow-heavy"]} itemsPerRow={4} />
+                    <MultiChoiceModule name="mood" choices={["emo-grin", "emo-happy", "emo-sleep", "emo-unhappy", "emo-cry", "emo-angry"]} itemsPerRow={3} />
                 </div>
     }
 }

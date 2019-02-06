@@ -1,0 +1,6 @@
+.icon {
+    transition: background-color .5s;
+    &:hover {
+        background-color: $beige-light;
+    }
+}

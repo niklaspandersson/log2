@@ -1,12 +1,20 @@
+const path = require("path");
+
 module.exports = {
-    mode: "development",
+    mode: "production",
 
     entry: "./src/js/index.tsx",
-    
+
     output: {
-        filename: "bundle.js",
-        path: __dirname + "/dist/js"
-    },
+        filename: '[name].bundle.js',
+        chunkFilename: 'common.js',
+        path: path.resolve(__dirname, 'dist/js')
+      },
+      optimization: {
+          splitChunks: {
+              chunks: 'all'
+          }
+      },
     
     devtool: "source-map",
 
