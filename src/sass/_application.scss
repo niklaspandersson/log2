@@ -1,0 +1,34 @@
+// Import a Google Font
+//@import url('https://fonts.googleapis.com/css?family=Nunito:400,700');
+
+// Set your brand colors
+$purple: #8A4D76;
+$pink: #FA7C91;
+$brown: #757763;
+$beige-lighter: #fafafa;
+$white: #fdfdfd;
+
+// Update Bulma's global variables
+$grey-dark: $brown;
+$grey-light: $beige-lighter;
+$primary: $purple;
+$link: $pink;
+$widescreen-enabled: false;
+$fullhd-enabled: false;
+
+// Update some of Bulma's component variables
+$body-background-color: $white;
+$control-border-width: 2px;
+$input-border-color: transparent;
+$input-shadow: none;
+
+$hover-background: $beige-lighter;
+
+$large-spacing: 2em;
+#app {
+    padding: $large-spacing;
+}
+
+.card {
+    margin-bottom: $large-spacing;
+}

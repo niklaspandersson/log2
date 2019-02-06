@@ -1,7 +1,13 @@
 .icon {
-    transition: background-color .5s;
+    &.is-xlarge {
+        width: 3.5rem;
+        height: 3.5rem;
+    }
+    border-radius: 50%;
+    transition: box-shadow .6s;
+
     &:hover {
-        background-color: $beige-light;
+        box-shadow: 2px 2px 3px $hover-background;
     }
 
     i {

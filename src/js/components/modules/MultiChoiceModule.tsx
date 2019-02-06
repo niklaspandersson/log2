@@ -36,7 +36,7 @@ const MultiChoiceModule: React.FunctionComponent<MultiChoiceModuleProps> = (prop
 
     return  <Card name={props.name}>
                 <div className={classnames({columns:true, "is-mobile": true, "is-multiline": props.choices.length > props.itemsPerRow })}>
-                    { props.choices.map((c,i) => <div key={i} className={classnames("column", "choice", columnSize)}>{<Icon icon={c} />}</div> )}
+                    { props.choices.map((c,i) => <div key={i} className={classnames("column", "has-text-centered", "choice", columnSize)}>{<Icon icon={c} />}</div> )}
                 </div>
             </Card>
 }

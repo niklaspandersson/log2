@@ -13,23 +13,22 @@ export interface ApplicationState {
 
 const modules = ["weather", "mood", "log"];
 
-const Test : React.FunctionComponent<ApplicationProps> = props => {
+// const Test : React.FunctionComponent<ApplicationProps> = props => {
 
-    const [isToggled, setIsToggled] = useState(false);
+//     const [isToggled, setIsToggled] = useState(false);
     
-    const onAnimationEnd:React.AnimationEventHandler = ev => {
-        if(ev.animationName == "example")
-            setIsToggled(false);
-    };
-    const onClick:React.MouseEventHandler = ev => setIsToggled(!isToggled);
+//     const onAnimationEnd = (ev:React.AnimationEvent) => {
+//         if(ev.animationName == "example")
+//             setIsToggled(false);
+//     };
 
-    return  <div    id="test" 
-                    onClick={onClick} 
-                    className={classnames({"active": isToggled})} 
-                    onAnimationEnd={onAnimationEnd}>
-                DEMO!
-            </div>
-}
+//     return  <div    id="test" 
+//                     onClick={ev => setIsToggled(!isToggled)} 
+//                     className={classnames({"active": isToggled})} 
+//                     onAnimationEnd={onAnimationEnd}>
+//                 DEMO!
+//             </div>
+// }
 
 export default class Application extends React.Component<ApplicationProps, ApplicationState> {
     constructor(props:ApplicationProps) {
@@ -43,7 +42,6 @@ export default class Application extends React.Component<ApplicationProps, Appli
     render() {
         return  <>
                     <Loader>
-                        <Test />
                         <CreateLog modules={modules} />
                     </Loader>
                 </>
