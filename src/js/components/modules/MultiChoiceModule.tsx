@@ -1,9 +1,9 @@
 import React from "react";
-import Panel, { PanelProps } from "../Panel";
+import Card, { CardProps } from "../Card";
 import Icon from "../Icon";
 import classnames from "classnames";
 
-export interface MultiChoiceModuleProps extends PanelProps {
+export interface MultiChoiceModuleProps extends CardProps {
     choices: string[],
     itemsPerRow: number
 }
@@ -34,11 +34,11 @@ const MultiChoiceModule: React.FunctionComponent<MultiChoiceModuleProps> = (prop
 
     const columnSize = getColumnSize(props.itemsPerRow);
 
-    return  <Panel name={props.name}>
-                <div className={classnames({columns:true, "is-vcentered": true, "is-mobile": true, "is-multiline": props.choices.length > props.itemsPerRow })}>
+    return  <Card name={props.name}>
+                <div className={classnames({columns:true, "is-mobile": true, "is-multiline": props.choices.length > props.itemsPerRow })}>
                     { props.choices.map((c,i) => <div key={i} className={classnames("column", "choice", columnSize)}>{<Icon icon={c} />}</div> )}
                 </div>
-            </Panel>
+            </Card>
 }
 
 export default MultiChoiceModule;
