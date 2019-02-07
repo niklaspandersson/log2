@@ -1,0 +1,14 @@
+.square {
+    display: flex;
+    align-items: center;
+    padding: .6em;
+    font-size: 120%;
+    transition: background-color .6s;
+    background-color: $body-background-color;
+    box-shadow: 1px 1px 6px -3px rgba(0,0,0,.8);
+}
+
+.square-content {
+    text-align: center;
+
+}

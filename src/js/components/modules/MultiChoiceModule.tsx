@@ -5,7 +5,9 @@ import classnames from "classnames";
 
 export interface MultiChoiceModuleProps extends CardProps {
     choices: string[],
-    itemsPerRow: number
+    itemsPerRow: number,
+    onChoiceSelected: (str:string) => void,
+    done: boolean
 }
 
 function getColumnSize(count:number) {
@@ -34,9 +36,23 @@ const MultiChoiceModule: React.FunctionComponent<MultiChoiceModuleProps> = (prop
 
     const columnSize = getColumnSize(props.itemsPerRow);
 
-    return  <Card name={props.name}>
+    const [activeChoice, setActiveChoice] = React.useState("");
+    const timeoutRef = React.useRef(-1);
+
+    const selectChoice = function (str:string) {
+        setActiveChoice(str);
+        if(timeoutRef.current != -1)
+            clearTimeout(timeoutRef.current);
+        timeoutRef.current = setTimeout(() => props.onChoiceSelected(activeChoice), 1000);
+    }
+
+    return  <Card name={props.name} hidden={props.done}>
                 <div className={classnames({columns:true, "is-mobile": true, "is-multiline": props.choices.length > props.itemsPerRow })}>
-                    { props.choices.map((c,i) => <div key={i} className={classnames("column", "has-text-centered", "choice", columnSize)}>{<Icon icon={c} />}</div> )}
+                    { props.choices.map((c,i) => {
+                        return  <div key={i} className={classnames("column", "choice", columnSize)}>
+                                    <Icon icon={c} onClick={() => selectChoice(c)} className={classnames({"active": activeChoice == c})} />
+                                </div>
+                    })}
                 </div>
             </Card>
 }

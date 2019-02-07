@@ -6,7 +6,8 @@
   "scripts": {
     "test": "json-server --watch ./test/data/db.json --static ./dist --port 8080 &",
     "build": "webpack",
-    "css-build": "node-sass src/sass/main.scss dist/css/main.css"
+    "css-build": "node-sass  --source-map true src/sass/main.scss dist/css/main.css",
+    "watch-css": "node-sass  --source-map true --watch src/sass/main.scss dist/css/main.css"
   },
   "author": "Niklas P Andersson",
   "license": "ISC",

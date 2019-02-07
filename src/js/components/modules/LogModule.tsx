@@ -12,7 +12,7 @@ const MultiChoiceModule: React.FunctionComponent<LogModuleProps> = (props) => {
 
     return  <Card name={props.name}>
                 <div className={classnames({columns:true, "is-mobile": true, "is-multiline": props.phrases.length > props.itemsPerRow })}>
-                    { props.phrases.map((p,i) => <div key={i} className={classnames("column", "is-half", "choice", "has-text-centered")}>
+                    { props.phrases.map((p,i) => <div key={i} className={classnames("column", "is-half", "choice")}>
                         <Square size="8rem">
                             {p}
                         </Square>

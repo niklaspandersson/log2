@@ -8,7 +8,11 @@ const Square:React.FunctionComponent<SquareProps> = props => {
         width: props.size,
         height: props.size
     };
-    return <div className="square" style={style}>{props.children}</div>
+    return <div className="square" style={style}>
+                <div className="square-content">
+                    {props.children}
+                </div>
+            </div>
 }
 
 export default Square;

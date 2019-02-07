@@ -7,16 +7,17 @@ export interface CreateLogProps {
 }
 
 export interface CreateLogState {
-
+    weather: string|null;
+    mood: string|null;
 }
 
 const phrases = [
-    "Vad har du gjort?",
-    "Vad har du sett?",
+    "Vad har jag gjort?",
+    "Vad har jag sett?",
     "Hur har det gått?",
     "Hur känns det?",
     "Vad har hänt?",
-    "Vad har du hört?",
+    "Vad har jag hört?",
     ""
 ];
 
@@ -24,12 +25,33 @@ export default class CreateLog extends React.Component<CreateLogProps, CreateLog
 {
     constructor(props:CreateLogProps) {
         super(props);
+
+        this.state= {
+            mood: null,
+            weather: null
+        }
+
+        this.weatherSelected = this.weatherSelected.bind(this);
+        this.moodSelected = this.moodSelected.bind(this);
+    }
+
+    weatherSelected(str:string) {
+        this.setState({weather: str});
+    }
+    moodSelected(str:string) {
+        this.setState({mood: str});
     }
 
     render() {
         return  <div className="create-post">
-                    <MultiChoiceModule name="weather" choices={["sun", "cloud-sun", "cloud", "drizzle", "rain", "cloud-flash", "snow-alt", "snow-heavy"]} itemsPerRow={4} />
-                    <MultiChoiceModule name="mood" choices={["emo-grin", "emo-happy", "emo-sleep", "emo-unhappy", "emo-cry", "emo-angry"]} itemsPerRow={3} />
+                    <MultiChoiceModule name="weather" done={this.state.weather != null} 
+                        choices={["sun", "cloud-sun", "cloud", "drizzle", "rain", "cloud-flash", "snow-alt", "snow-heavy"]} 
+                        onChoiceSelected={this.weatherSelected}
+                        itemsPerRow={4} />
+                    <MultiChoiceModule name="mood" done={this.state.mood != null} 
+                        choices={["emo-grin", "emo-happy", "emo-sleep", "emo-unhappy", "emo-cry", "emo-angry"]} 
+                        onChoiceSelected={this.moodSelected}
+                        itemsPerRow={3} />
                     <LogModule name="log" phrases={phrases} itemsPerRow={2} />
                 </div>
     }

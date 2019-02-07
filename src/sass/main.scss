@@ -16,14 +16,5 @@
 @import "../../node_modules/bulma/sass/elements/icon.sass";
 
 @import "icon";
-
-.square {
-    display: inline-block;
-    padding: .6em;
-    font-size: 120%;
-    vertical-align: middle;
-    transition: background-color .6s;
-    &:hover {
-        background-color: darken($hover-background, 10%);
-    }
-}
+@import "square";
+@import "panel";

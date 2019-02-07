@@ -1,5 +1,5 @@
 dist/js
-dist/css/main.css
+dist/css/main.*
 dist/font
 node_modules
 src/fontello/css
