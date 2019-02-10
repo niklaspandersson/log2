@@ -3,5 +3,5 @@ import ReactDOM from "react-dom";
 import Application from "./Application";
 
 document.addEventListener("DOMContentLoaded", () => {
-    ReactDOM.render(<Application />, document.getElementById("app"));
+    ReactDOM.render(<Application />, document.getElementById("app-container"));
 });

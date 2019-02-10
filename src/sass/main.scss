@@ -1,7 +1,7 @@
 @charset "utf-8";
 
 
-@import "application";
+@import "globals";
 
 // Import only what you need from Bulma
 @import "../../node_modules/bulma/sass/utilities/_all.sass";
@@ -14,6 +14,11 @@
 @import "../../node_modules/bulma/sass/components/card.sass";
 @import "../../node_modules/bulma/sass/layout/section.sass";
 @import "../../node_modules/bulma/sass/elements/icon.sass";
+
+@import "application";
+@import "sidepanel";
+@import "journal";
+@import "post";
 
 @import "icon";
 @import "square";

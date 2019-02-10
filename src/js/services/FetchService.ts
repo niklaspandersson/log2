@@ -1,5 +1,3 @@
-import { OptionalKeys, IsOptional } from "prop-types";
-
 type HTTPVerb = "GET" | "POST" | "PUT" | "PATCH" | "UPDATE" | "DELETE";
 
 export default class FetchService<T> 
@@ -11,11 +9,11 @@ export default class FetchService<T>
     }
 
     async getAll() {
-        return this.doFetch(this.url, this.createOptions("GET"));
+        return this.doFetch(this.url, this.createOptions("GET")) as Promise<T[]>;
     }
 
     async get(id:number) {
-        return this.doFetch(`${this.url}/${id}`, this.createOptions("GET"));
+        return this.doFetch(`${this.url}/${id}`, this.createOptions("GET")) as Promise<T>;
     }
 
     async create(data:T) {

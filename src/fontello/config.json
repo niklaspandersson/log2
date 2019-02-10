@@ -44,7 +44,7 @@
     },
     {
       "uid": "02bb2eaa1515b8fc954abbaf80212739",
-      "css": "snow-alt",
+      "css": "snow",
       "code": 59398,
       "src": "meteocons"
     },
@@ -56,39 +56,87 @@
     },
     {
       "uid": "c64623255a4a7c72436b199b05296c4f",
-      "css": "emo-happy",
+      "css": "happy",
       "code": 59400,
       "src": "fontelico"
     },
     {
       "uid": "53ed8570225581269cd7eff5795e8bea",
-      "css": "emo-unhappy",
+      "css": "unhappy",
       "code": 59401,
       "src": "fontelico"
     },
     {
       "uid": "f0d3ad15d020cf187d42dd3b2295b65c",
-      "css": "emo-angry",
+      "css": "angry",
       "code": 59405,
       "src": "fontelico"
     },
     {
       "uid": "04688d76a33ce7a7950e40fae79c08ac",
-      "css": "emo-cry",
+      "css": "cry",
       "code": 59407,
       "src": "fontelico"
     },
     {
       "uid": "cbc328d1c779a2b9e3b1199d904199a5",
-      "css": "emo-grin",
+      "css": "grin",
       "code": 59404,
       "src": "fontelico"
     },
     {
       "uid": "fd59eac4d575b48eb156590b63a355fd",
-      "css": "emo-sleep",
+      "css": "sleep",
       "code": 59402,
       "src": "fontelico"
+    },
+    {
+      "uid": "b356b6fbb59d7eca7c15fdb055f0401f",
+      "css": "wind",
+      "code": 59422,
+      "src": "typicons"
+    },
+    {
+      "uid": "5c49851100aa021825b346d16d7f3abf",
+      "css": "temperatire",
+      "code": 59403,
+      "src": "typicons"
+    },
+    {
+      "uid": "2ca5a006e414e0827f7fc5b187689c04",
+      "css": "fog",
+      "code": 59406,
+      "src": "meteocons"
+    },
+    {
+      "uid": "b500010a53f4807828ac252725dc6fd1",
+      "css": "hail",
+      "code": 59408,
+      "src": "meteocons"
+    },
+    {
+      "uid": "93faa7cec68bf69ec455bbab61e58e48",
+      "css": "grid",
+      "code": 59409,
+      "src": "elusive"
+    },
+    {
+      "uid": "50e664a6f12199784c02600b2ccfd60a",
+      "css": "list",
+      "code": 59410,
+      "src": "elusive"
+    },
+    {
+      "uid": "559647a6f430b3aeadbecd67194451dd",
+      "css": "menu",
+      "code": 61641,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "c21d309f797d3644dc8d28c4617738ce",
+      "css": "back",
+      "code": 59411,
+      "src": "mfglabs"
     }
   ]
 }

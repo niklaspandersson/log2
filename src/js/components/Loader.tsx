@@ -1,10 +1,10 @@
 import React from "react";
 
 interface LoaderProps {
+    children?:React.ReactNode;
 }
 
-const Loader: React.FunctionComponent<LoaderProps> = (props) => {
-    return <> { props.children || <h1>Loading...</h1>} </>
-   }
-
-export default Loader;
+export default function Loader(props:LoaderProps) {
+    let loadingContent = <h1>Loading...</h1>
+    return <>{props.children || loadingContent}</>;
+}

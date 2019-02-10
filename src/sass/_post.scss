@@ -1,0 +1,15 @@
+.post-title {
+    font-weight: bold;
+
+    .year {
+        font-weight: normal;
+    }
+}
+
+.create-post {
+    .module {
+        border: 1px solid gray;
+        padding: 5px;
+        margin-bottom: $default-margin;
+    }
+}

@@ -1,36 +1,46 @@
-// Import a Google Font
-//@import url('https://fonts.googleapis.com/css?family=Nunito:400,700');
+$application-padding: $default-margin;
 
-// Set your brand colors
-$purple: #8A4D76;
-$pink: #FA7C91;
-$brown: #757763;
-$beige-lighter: #fafafa;
-$white: #fdfdfd;
-
-// Update Bulma's global variables
-$grey-dark: $brown;
-$grey-light: $beige-lighter;
-$primary: $purple;
-$link: $pink;
-$widescreen-enabled: false;
-$fullhd-enabled: false;
-$desktop: 720px;
-$gap: 128px;
-
-// Update some of Bulma's component variables
-$body-background-color: $white;
-$control-border-width: 2px;
-$input-border-color: transparent;
-$input-shadow: none;
-
-$hover-background: $beige-lighter;
-
-$large-spacing: 2em;
-#app {
-    padding: $large-spacing;
+body, html {
+    overflow-y: hidden;
 }
 
-.card {
-    margin-bottom: $large-spacing;
+#app-container {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+.application {
+    max-width: 100%;
+    flex: 1 0 auto;
+    padding: $application-padding;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.application-menu {
+    padding: $application-padding;
+}
+
+.application-header {
+    flex: 0 0 auto;
+    position: relative;
+    .appmenu-icon {
+        left: 0;
+        top: 0;
+        position: absolute;
+    }
+    text-align: center;
+}
+
+.application-title {
+    font-weight: bold;
+}
+
+.view {
+    flex: 1 0 auto;
+    margin-top: $default-margin;    
+    overflow-y: auto;    
 }

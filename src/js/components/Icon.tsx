@@ -7,8 +7,8 @@ export interface IconProps{
     className?:string;
 };
 
-const Icon:React.FunctionComponent<IconProps> = props => {
-    return <div className={classnames(props.className, "icon is-xlarge")} onClick={props.onClick}><i className={`icon-${props.icon}`} /></div>
+function Icon(props:IconProps) {
+    return <div className={classnames(props.className, "icon")} onClick={props.onClick}><i className={`icon-${props.icon}`} /></div>
 }
 
 export default Icon;

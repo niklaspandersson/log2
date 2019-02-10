@@ -1,5 +1,5 @@
 import FetchService from "./FetchService";
-import { Post } from "../models/post";
+import Post from "../models/post";
 
 export default class PostService extends FetchService<Post>
 {

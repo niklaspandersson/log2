@@ -1,6 +1,8 @@
-export interface Post {
+import { Moment } from "moment";
+
+export default interface Post {
     id: number;
     data: object;
-    time: Date;
+    time: string|Moment;
     userId: number;
 }
