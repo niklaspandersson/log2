@@ -10,16 +10,12 @@ interface CreateNewPostViewProps extends IViewProps {
 }
 function SelectModuleView(props:Module) {
     let data = props.data as SelectModuleData;
-    return  <div>
+    return  <>
                 <header>{props.title}</header>
-                <div className={classnames({columns:true, "is-mobile": true, "is-multiline": data.options.length > 4 })}>
-                    { data.options.map((c,i) => {
-                        return  <div key={i} className={classnames("column", "choice", "is-one-quarter")}>
-                                    <Icon icon={c} />
-                                </div>
-                    })}
+                <div className="select">
+                    { data.options.map((c,i) => <div key={i} className={"option"}><Icon icon={c} /></div>)}
                 </div>                
-            </div>
+            </>
 }
 
 function LogModuleView(props:Module) {

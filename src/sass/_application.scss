@@ -42,5 +42,9 @@ body, html {
 .view {
     flex: 1 0 auto;
     margin-top: $default-margin;    
-    overflow-y: auto;    
+    overflow-y: auto;   
+    overflow-x: hidden;
+    margin: -3px;
+    margin-top: $default-margin;
+    padding: 3px; 
 }

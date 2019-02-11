@@ -4,7 +4,7 @@
   "description": "A logbook SPA that tries to simplify logging so much that it actually gets done",
   "main": "index.js",
   "scripts": {
-    "test": "json-server --watch ./test/data/db.json --static ./dist --port 8080 &",
+    "test": "json-server --watch ./test/data/db.json --static ./dist --port 8000 &",
     "build": "webpack",
     "css-build": "node-sass  --source-map true src/sass/main.scss dist/css/main.css",
     "watch-css": "node-sass  --source-map true --watch src/sass/main.scss dist/css/main.css"

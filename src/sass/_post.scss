@@ -8,8 +8,36 @@
 
 .create-post {
     .module {
-        border: 1px solid gray;
+        //border: 1px solid gray;
         padding: 5px;
-        margin-bottom: $default-margin;
+        margin-bottom: $default-margin*1.5;
+        box-shadow: $default-shadow;
+
+        header {
+            line-height: 1em;
+            margin: $default-margin/2 0;
+            font-size: 80%;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .select {
+            margin: $default-margin;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: $default-margin;
+
+            .option {
+                text-align: center;
+
+                .icon {
+                    height: 2.5rem;
+                    width: 2.5rem;
+                }
+                i {
+                    font-size: 2rem;
+                }
+            }
+        }
     }
 }
