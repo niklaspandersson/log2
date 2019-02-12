@@ -8,7 +8,7 @@ export interface IconProps{
 };
 
 function Icon(props:IconProps) {
-    return <div className={classnames(props.className, "icon")} onClick={props.onClick}><i className={`icon-${props.icon}`} /></div>
+    return <div className={classnames(props.className, "icon", {"clickable": !!props.onClick})} onClick={props.onClick}><i className={`icon-${props.icon}`} /></div>
 }
 
 export default Icon;

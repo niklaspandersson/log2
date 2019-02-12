@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Post from "../models/post";
 import classnames from "classnames";
 import IViewProps from "./IViewProps";
@@ -7,30 +7,36 @@ import Icon from "../components/Icon";
 
 interface CreateNewPostViewProps extends IViewProps {
     modules: Module[];
+    onComplete?: (data:any) => void;
 }
-function SelectModuleView(props:Module) {
+
+interface ModuleProps extends Module {
+    onSelect: (val:any) => void;
+}
+function SelectModuleView(props:ModuleProps) {
     let data = props.data as SelectModuleData;
+
     return  <>
                 <header>{props.title}</header>
                 <div className="select">
-                    { data.options.map((c,i) => <div key={i} className={"option"}><Icon icon={c} /></div>)}
+                    { data.options.map((c,i) => <div key={i} className={"option"}><Icon icon={c} onClick={() => props.onSelect(c)} /></div>)}
                 </div>                
             </>
 }
 
-function LogModuleView(props:Module) {
+function LogModuleView(props:ModuleProps) {
     return <div>log</div>
 }
 
-function createModuleComponent(model:Module) {
+function createModuleComponent(model:Module, setter: (key:any, val:any) => void) {
     let result:JSX.Element = null;
 
     switch(model.type) {
         case "select":
-            result = <SelectModuleView {...model} />
+            result = <SelectModuleView {...model} onSelect={(val:any) => setter(model.key, val)} />
             break;
         case "log":
-            result = <LogModuleView {...model} />
+            result = <LogModuleView {...model} onSelect={(val:any) => setter(model.key, val)} />
             break;
     }
 
@@ -38,10 +44,18 @@ function createModuleComponent(model:Module) {
 }
 
 export default function CreateNewPostView(props:CreateNewPostViewProps) {
+    let [data, setData] = useState({});
+
+    const setModuleData = (key:string, value:any) => {
+        let newData:any = {...data};
+        newData[key] = value;
+        console.log(newData);
+        setData(newData);
+    }
 
     let modules = props.modules
                         .map(m => {
-                            let component = createModuleComponent(m);
+                            let component = createModuleComponent(m, setModuleData);
                             return component && <li key={m.key}><div className="module">{component}</div></li>
                         })
                         .filter(m => !!m);
