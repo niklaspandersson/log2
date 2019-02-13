@@ -9,14 +9,17 @@ import JournalView from "./views/JournalView";
 import Icon from "./components/Icon";
 import moment = require("moment");
 import CreateNewPostView from "./views/CreateNewPostView";
+import PostView from "./views/PostView";
 
-type ViewMode = "journal" | "new-post";
+type ViewMode = "journal" | "new-post" | number;
+const NewPostId:number = 0;
 
 interface ApplicationState {
     isMenuVisible:boolean;
-    view: number|ViewMode;
+    view: ViewMode;
     posts: Post[];
     hasPostToday: boolean;
+    currentPost?: Post;
 }
 
 
@@ -38,10 +41,6 @@ function ApplicationHeader(props:AppHeaderProps) {
 
 function LoginView(props:any) {
     return  <div>Login</div>
-}
-
-function PostView(props:any) {
-    return  <div>single post</div>
 }
 
 function ApplicationMenu(props:any) {
@@ -93,7 +92,7 @@ export default class Application extends React.Component<{}, ApplicationState> {
         this.setState({isMenuVisible: true});
     }
     showJournal() {
-        this.setState({view: "journal"});
+        this.setState({view: "journal", currentPost: null});
     }
 
     render() {
@@ -117,8 +116,12 @@ export default class Application extends React.Component<{}, ApplicationState> {
             return [defaultHeaderProps, <LoginView className="view" />]
         
         else if(this.state.view === "journal") {
+            const openPost = (post:Post) => {
+                this.setState({currentPost: post, view: post.id });
+            }
+
             if(this.state.posts)
-                return [defaultHeaderProps, <JournalView className="view" hasPostToday={this.state.hasPostToday} posts={this.state.posts} />];
+                return [defaultHeaderProps, <JournalView className="view" onSelectPost={post => openPost(post)} hasPostToday={this.state.hasPostToday} posts={this.state.posts} />];
             else
                 return [defaultHeaderProps, null as JSX.Element];
         }
@@ -127,11 +130,16 @@ export default class Application extends React.Component<{}, ApplicationState> {
             let postHeaderProps:AppHeaderProps = { menuIcon: "back", menuAction: this.showJournal }
             if(this.state.view === "new-post") {
                 postHeaderProps.title = this.getPostTitle();
-                return [postHeaderProps, <CreateNewPostView className="view" modules={this.document.Modules} />];
+                const newPostCreated = (data:any) => {
+                    this.setState({view: NewPostId, currentPost: { id: NewPostId, data }});
+                }
+                return [postHeaderProps, <CreateNewPostView className="view" modules={this.document.Modules} onComplete={data => newPostCreated(data)} />];
             }
                 
-        
-            return [postHeaderProps, <PostView className="view" id={this.state.view} />]
+            const savePost = (data:any) => {
+                //Save post to backend and return to journal
+            }        
+            return [postHeaderProps, <PostView className="view" initialValue={(this.state.currentPost && this.state.currentPost.data) || undefined} onSave={data => savePost(data)} />]
         } 
     }
 

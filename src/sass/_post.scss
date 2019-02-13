@@ -6,6 +6,26 @@
     }
 }
 
+.view.post {
+    display: flex;
+    flex-flow: column nowrap;
+
+    .body {
+        flex: 1 0 auto;
+        font-size: 1em;
+        line-height: 1.5em;
+        outline: none;
+        border: none;
+    }
+
+    footer {
+        background: $accent-background;
+        text-align: center;
+        font-weight: bold;
+        color: $white;
+    }
+}
+
 .create-post {
     .module {
         //border: 1px solid gray;

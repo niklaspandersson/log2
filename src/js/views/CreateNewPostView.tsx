@@ -37,9 +37,9 @@ function LogModuleView(props:ModuleProps) {
 
     const [value, setValue] = useState("");
 
-    const doSelect = (c:string) => {
-        props.onSelect(c);
-        setValue(c);    
+    const doSelect = (p:string) => {
+        props.onSelect({body: p});
+        setValue(p);    
     }
     return  <>
                 <div className={classnames({"select": true, "has-value": !!value})}>
