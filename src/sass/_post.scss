@@ -38,6 +38,31 @@
                     font-size: 2rem;
                 }
             }
+
+            &.has-value {
+                .option {
+                    transition: opacity $FastTransition;
+                    opacity: .3;
+                    &.selected {
+                        transition: opacity $FastTransition;
+                        opacity: 1;
+                    }
+                }
+            }
+        }
+
+        &.hidden {
+            display: none;
+        }
+
+        &.module-log {
+            .select {
+                grid-template-columns: repeat(2, 1fr);
+
+                .option {
+                    border: 1px solid $accent-color;
+                }
+            }
         }
     }
 }

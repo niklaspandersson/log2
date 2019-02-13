@@ -2,8 +2,9 @@ import React, {useState} from "react";
 import Post from "../models/post";
 import classnames from "classnames";
 import IViewProps from "./IViewProps";
-import Module, { SelectModuleData } from "../models/module";
+import Module, { SelectModuleData, LogModuleData } from "../models/module";
 import Icon from "../components/Icon";
+import useDebounce from "../utils/useDebounce";
 
 interface CreateNewPostViewProps extends IViewProps {
     modules: Module[];
@@ -16,16 +17,35 @@ interface ModuleProps extends Module {
 function SelectModuleView(props:ModuleProps) {
     let data = props.data as SelectModuleData;
 
+    const [value, setValue] = useState("");
+
+    const doSelect = (c:string) => {
+        props.onSelect(c);
+        setValue(c);    
+    }
+
     return  <>
                 <header>{props.title}</header>
-                <div className="select">
-                    { data.options.map((c,i) => <div key={i} className={"option"}><Icon icon={c} onClick={() => props.onSelect(c)} /></div>)}
+                <div className={classnames({"select": true, "has-value": !!value})}>
+                    { data.options.map((c,i) => <div key={i} className={classnames({"option": true, "selected": value === c})}><Icon icon={c} onClick={doSelect.bind(null, c)} /></div>)}
                 </div>                
             </>
 }
 
 function LogModuleView(props:ModuleProps) {
-    return <div>log</div>
+    let data = props.data as LogModuleData;
+
+    const [value, setValue] = useState("");
+
+    const doSelect = (c:string) => {
+        props.onSelect(c);
+        setValue(c);    
+    }
+    return  <>
+                <div className={classnames({"select": true, "has-value": !!value})}>
+                    { data.phrases.map((p,i) => <div key={i} className={classnames({"option": true, "selected": value === p})}><div className="clickable" onClick={doSelect.bind(null, p)}>{p}</div></div>)}
+                </div>                
+            </>
 }
 
 function createModuleComponent(model:Module, setter: (key:any, val:any) => void) {
@@ -45,18 +65,27 @@ function createModuleComponent(model:Module, setter: (key:any, val:any) => void)
 
 export default function CreateNewPostView(props:CreateNewPostViewProps) {
     let [data, setData] = useState({});
+    let [hidden, setHidden] = useState({});
+    let debouncedHidden = useDebounce(hidden, 500);
 
     const setModuleData = (key:string, value:any) => {
         let newData:any = {...data};
         newData[key] = value;
-        console.log(newData);
+
+        if(key === "log") {
+            props.onComplete(newData);
+        }
         setData(newData);
+
+        let newHidden:any = {...hidden};
+        newHidden[key] = true;
+        setHidden(newHidden);
     }
 
     let modules = props.modules
                         .map(m => {
                             let component = createModuleComponent(m, setModuleData);
-                            return component && <li key={m.key}><div className="module">{component}</div></li>
+                            return component && <li key={m.key}><div className={classnames("module", `module-${m.key}`, ((debouncedHidden as any)[m.key]) && "hidden" )}>{component}</div></li>
                         })
                         .filter(m => !!m);
 

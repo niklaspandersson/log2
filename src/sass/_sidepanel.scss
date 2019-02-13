@@ -36,16 +36,15 @@
 
 /* THEME */
 .theme-default {
-    $accent-background: #C2CFF3;
     $side-panel-opacity: .5;
 
-    .side-panel .background {
+    &.side-panel .background {
         background-color: $accent-background;
     }
-    .side-panel.visible .background {
+    &.side-panel.visible .background {
         opacity: $side-panel-opacity;
     }
-    .side-panel .container {
+    &.side-panel .container {
         background: $accent-background;
     }
 }

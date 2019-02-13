@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import classnames from "classnames";
 import Loader from "./components/Loader";
 import AppDocument from "./document/Document";
 import SidePanel from "./components/SidePanel";
@@ -96,14 +97,15 @@ export default class Application extends React.Component<{}, ApplicationState> {
     }
 
     render() {
-        let [menuProps, contents] = this.getContents();
+        const [menuProps, contents] = this.getContents();
+        const theme = "theme-default";
         return  <>
-                    <div className="application theme-default">
+                    <div className={classnames("application", theme)}>
                         <ApplicationHeader {...menuProps} />
 
                         <Loader>{contents}</Loader>
                     </div>
-                    <SidePanel visible={this.state.isMenuVisible} onHide={this.hideMenu}>
+                    <SidePanel className={theme} visible={this.state.isMenuVisible} onHide={this.hideMenu}>
                         <ApplicationMenu />
                     </SidePanel>
                 </>
