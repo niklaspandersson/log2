@@ -3,8 +3,8 @@ import classnames from "classnames";
 import Loader from "./components/Loader";
 import AppDocument from "./document/Document";
 import SidePanel from "./components/SidePanel";
-import Module from "./models/module";
-import Post from "./models/post";
+import Module from "./../common/models/module";
+import Post from "./../common/models/post";
 import JournalView from "./views/JournalView";
 import Icon from "./components/Icon";
 import moment = require("moment");
@@ -137,7 +137,8 @@ export default class Application extends React.Component<{}, ApplicationState> {
             }
                 
             const savePost = (data:any) => {
-                //Save post to backend and return to journal
+                //TODO: Save post to backend and return to journal
+                this.showJournal();
             }        
             return [postHeaderProps, <PostView className="view" initialValue={(this.state.currentPost && this.state.currentPost.data) || undefined} onSave={data => savePost(data)} />]
         } 

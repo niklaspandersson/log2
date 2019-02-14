@@ -1,8 +1,10 @@
-dist/js
-dist/css/main.*
-dist/font
+dist/public_html/js
+dist/backend
+dist/public_html/css/main.*
+dist/public_html/font
 node_modules
-src/fontello/css
-src/fontello/font
-src/fontello/*.txt
-src/fontello/*.html
+src/sass/fontello/css
+src/sass/fontello/font
+src/sass/fontello/*.txt
+src/sass/fontello/*.html
+conf

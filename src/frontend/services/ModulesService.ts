@@ -1,5 +1,5 @@
 import FetchService from "./FetchService";
-import Module from "../models/module";
+import Module from "../../common/models/module";
 
 export default class ModulesService extends FetchService<Module>
 {

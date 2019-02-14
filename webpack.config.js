@@ -3,12 +3,12 @@ const path = require("path");
 module.exports = {
     mode: "development",
 
-    entry: "./src/js/index.tsx",
+    entry: "./src/frontend/index.tsx",
 
     output: {
         filename: '[name].bundle.js',
         chunkFilename: 'common.js',
-        path: path.resolve(__dirname, 'dist/js')
+        path: path.resolve(__dirname, 'dist/public_html/js')
       },
       optimization: {
           splitChunks: {
@@ -25,10 +25,20 @@ module.exports = {
     module: {
         rules: [
             // All files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'.
-            { test: /\.tsx?$/, loader: "ts-loader" },
+            { 
+                test: /\.tsx?$/, 
+                loader: "ts-loader",
+                options: {
+                    configFile : "tsconfig-frontend.json"
+                  }
+            },
 
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-            { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
+            { 
+                enforce: "pre", 
+                test: /\.js$/, 
+                loader: "source-map-loader" 
+            }
         ]
     }
 };

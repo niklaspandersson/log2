@@ -1,8 +1,8 @@
 import React, {useState} from "react";
-import Post from "../models/post";
+import Post from "../../common/models/post";
 import classnames from "classnames";
 import IViewProps from "./IViewProps";
-import Module, { SelectModuleData, LogModuleData } from "../models/module";
+import Module, { SelectModuleData, LogModuleData } from "../../common/models/module";
 import Icon from "../components/Icon";
 import useDebounce from "../utils/useDebounce";
 

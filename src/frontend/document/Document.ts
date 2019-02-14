@@ -1,8 +1,8 @@
 import UserService from "../services/UserService";
 import ModulesService from "../services/ModulesService";
-import User from "../models/user";
-import Module from "../models/module";
-import Post from "../models/post";
+import User from "../../common/models/user";
+import Module from "../../common/models/module";
+import Post from "../../common/models/post";
 import PostService from "../services/PostService";
 import moment = require("moment");
 
