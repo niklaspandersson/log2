@@ -31,13 +31,13 @@ export default class {
 
     constructor() {
         this.today = moment();
-        this.userService = new UserService("/users");
-        this.modulesService = new ModulesService("/modules");
-        this.postService = new PostService("/posts");
+        this.userService = new UserService("/api/user");
+        this.modulesService = new ModulesService("/api/modules");
+        this.postService = new PostService("/api/posts");
     }
 
     async init() {
-        let user = this.userService.get(1);
+        let user = this.userService.get();
         let modules = this.modulesService.getAll();
 
         let res = await Promise.all([user, modules]);
@@ -52,6 +52,12 @@ export default class {
         this.posts = await this.postService.getAll();
         this.posts.forEach(post => (post.time as moment.Moment) = moment(post.time as string));
         return this.posts;
+    }
+    async createPost(data:any) {
+        return await this.postService.create({data});
+    }
+    async updateModuleData(postId:string, mod:string, data:any) {
+        return await this.postService.updateModuleData(postId, mod, data);
     }
 
     private getUserModules(appModules:Module[]) {

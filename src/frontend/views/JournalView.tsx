@@ -29,7 +29,7 @@ function PostListItem(post:Post&{select: (post:Post) => void}) {
 }
 
 export default function JournalView(props:JournalViewProps) {
-    let posts = props.posts && props.posts.map(post => <PostListItem key={post.id} {...post} select={props.onSelectPost} />)
+    let posts = props.posts && props.posts.map(post => <PostListItem key={post._id} {...post} select={props.onSelectPost} />)
     return  <div className={classnames("journal", props.className)}>
                 { /*!hasToday && createPostButton() */ }
                 <ul>

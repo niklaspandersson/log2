@@ -11,8 +11,7 @@ import moment = require("moment");
 import CreateNewPostView from "./views/CreateNewPostView";
 import PostView from "./views/PostView";
 
-type ViewMode = "journal" | "new-post" | number;
-const NewPostId:number = 0;
+type ViewMode = "journal" | "new-post" | string;
 
 interface ApplicationState {
     isMenuVisible:boolean;
@@ -117,7 +116,7 @@ export default class Application extends React.Component<{}, ApplicationState> {
         
         else if(this.state.view === "journal") {
             const openPost = (post:Post) => {
-                this.setState({currentPost: post, view: post.id });
+                this.setState({currentPost: post, view: post._id });
             }
 
             if(this.state.posts)
@@ -130,17 +129,18 @@ export default class Application extends React.Component<{}, ApplicationState> {
             let postHeaderProps:AppHeaderProps = { menuIcon: "back", menuAction: this.showJournal }
             if(this.state.view === "new-post") {
                 postHeaderProps.title = this.getPostTitle();
-                const newPostCreated = (data:any) => {
-                    this.setState({view: NewPostId, currentPost: { id: NewPostId, data }});
+                const createNewPost = async (data:any) => {
+                    let newPost = await this.document.createPost(data);
+                    this.setState({view: newPost._id, currentPost: newPost});
                 }
-                return [postHeaderProps, <CreateNewPostView className="view" modules={this.document.Modules} onComplete={data => newPostCreated(data)} />];
+                return [postHeaderProps, <CreateNewPostView className="view" modules={this.document.Modules} onComplete={data => createNewPost(data)} />];
             }
                 
-            const savePost = (data:any) => {
-                //TODO: Save post to backend and return to journal
+            const saveLog = async (data:any) => {
+                await this.document.updateModuleData(this.state.currentPost._id, "log", data);
                 this.showJournal();
             }        
-            return [postHeaderProps, <PostView className="view" initialValue={(this.state.currentPost && this.state.currentPost.data) || undefined} onSave={data => savePost(data)} />]
+            return [postHeaderProps, <PostView className="view" initialValue={(this.state.currentPost && this.state.currentPost.data) || undefined} onSaveLog={data => saveLog(data)} />]
         } 
     }
 

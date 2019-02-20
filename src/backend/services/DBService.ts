@@ -1,92 +1,39 @@
-import {MongoClient, Db, ObjectId} from "mongodb";
+import MongoDBService from "./MongoDBService";
+
 import User from "../../common/models/user";
+import Post from "../../common/models/post";
+import { ObjectID } from "bson";
 
-export class DBService
+export class DBService extends MongoDBService
 {
-    private url:string;
-    private name:string;
-
-    private cachedConnection:Promise<Db>;
-    private client:MongoClient;
-
     constructor(url:string, name:string) {
-        this.url = url;
-        this.name = name;
+        super(url, name);
     }
 
-    // public getContents() {
-    //     return this.guard(db => db.collection<IContent>("content").find({}).sort('_id', -1).toArray());
-    // }
-    // public createContent(data:IContent) {
-    //     return this.guard(async db => {
-    //         let result = await db.collection<IContent>("content").insertOne(data);
-    //         return  {...data, _id: result.insertedId };
-    //     });
-    // }
-    // public createExercise(contentId: string, data:Partial<IExercise>) {
-    //     return this.guard(async db => {
-    //         return await db.collection<IContent>("content").updateOne({_id: ObjectId.createFromHexString(contentId) }, {$push: { exercises: data }});
-    //     });
-    // }
-    // public updateExercise(contentId: string, exerciseKey:string, data:Partial<IExercise>) {
-    //     return this.guard(db => db.collection<IContent>("content").updateOne({_id: ObjectId.createFromHexString(contentId), "exercises.key": exerciseKey }, {$set: {"exercises.$": data}}));
-    // }
+    public getPosts(userId:string) {
+        return this.guard(db => db.collection<Post>("posts").find().sort({'time': 1}).toArray());
+    }
+    public createPost(data:Post) {
+        return this.guard(async db => {
+            let result = await db.collection<Post>("posts").insertOne(data);
+            return  {...data, _id: result.insertedId.toHexString() };
+        });
+    }
+    public async updatePostData(id: string, module:string, data:any) {
+        let val = {};
+        val['updated'] = (new Date()).toUTCString();
+        val[`data.${module}`] = data;
+        let res = await this.guard(db => db.collection<Post>("posts").updateOne({_id: ObjectID.createFromHexString(id) }, {$set: val}));
+        return res.modifiedCount === 1;
+    }
 
-    // public updateContent(id: string, data:Partial<IContent>) {
-    //     return this.guard(db => db.collection<IContent>("content").updateOne({_id: ObjectId.createFromHexString(id) }, {$set: data}));
-    // }
-
-    // public getUserWork(id:string) {
-    //     return this.guard(db => db.collection<IWork>("work").find({userId: id}).toArray());
-    // }
-    // public updateUserWork(userId:string, exerciseKey:string, completed:boolean) {
-    //     return this.guard(db => db.collection<IWork>("work").updateOne({userId, exerciseKey}, { $set: {completed: !!completed} }, {upsert:true}));
-    // }
     public getUser(email:string) {
-        return this.guard(db => db.collection<User>("users").findOne({email: email}));
+        return this.guard(db => db.collection<User>("users").findOne({email}));
     }
     public createUser(model:User) {
         return this.guard(async db => {
             let result = await db.collection<User>("users").insertOne(model);
-            return {...model, _id: result.insertedId };
+            return {...model, _id: result.insertedId.toHexString() };
         });
-    }
-    private get connection() {
-        return this.cachedConnection || (this.cachedConnection = this.createConnection());
-    } 
-
-    private createConnection = async () => {
-        if(this.client)
-            this.closeConnection();
-
-        this.client = new MongoClient(this.url);
-        await this.client.connect();
-
-        return this.cachedConnection = Promise.resolve(this.client.db(this.name));
-    }
-
-    private async closeConnection() {
-        try {
-            if(this.client) {
-                await this.client.close();
-            }
-        }
-        catch(err) {
-        }
-        finally {
-            this.client = null;
-            this.cachedConnection = null;
-        }
-    }
-
-    private async guard<T>(worker: (db:Db) => Promise<T>) {
-        try {
-            const db = await this.connection;
-            return worker(db);
-        }
-        catch(err) {
-            console.log("error: ", err);
-            this.closeConnection();
-        }
     }
 }

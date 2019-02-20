@@ -12,21 +12,21 @@ export default class FetchService<T>
         return this.doFetch(this.url, this.createOptions("GET")) as Promise<T[]>;
     }
 
-    async get(id:number) {
+    async get(id:string) {
         return this.doFetch(`${this.url}/${id}`, this.createOptions("GET")) as Promise<T>;
     }
 
     async create(data:T) {
         return this.doFetch(this.url, this.createOptions("POST", data));
     }
-    async update(id:number, data:Partial<T>) {
-        return this.doFetch(`${this.url}/${id}`, this.createOptions("UPDATE", data));
+    async update(id:string, data:Partial<T>) {
+        return this.doFetch(`${this.url}/${id}`, this.createOptions("PUT", data));
     }
-    async delete(id:number) {
+    async delete(id:string) {
         return this.doFetch(`${this.url}/${id}`, this.createOptions("DELETE"));
     }
 
-    private async doFetch(url:string, options?:Partial<RequestInit>) {
+    protected async doFetch(url:string, options?:Partial<RequestInit>) {
         let res = await window.fetch(url, options);
         if(!res.ok)
             throw new FetchServiceError("Response code not ok", res);
@@ -35,7 +35,7 @@ export default class FetchService<T>
     }
 
 
-    private createOptions(method:HTTPVerb = "GET", data?:Partial<T>, extras?:Partial<RequestInit>):Partial<RequestInit> {
+    protected createOptions(method:HTTPVerb = "GET", data?:Partial<T>, extras?:Partial<RequestInit>):Partial<RequestInit> {
        let obj:RequestInit = {
             method,
         };

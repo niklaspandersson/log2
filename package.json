@@ -8,8 +8,8 @@
     "build": "webpack",
     "build-backend": "tsc -p tsconfig-backend.json",
     "serve": "node dist/backend/backend/main.js",
-    "css-build": "node-sass  --source-map true src/sass/main.scss dist/css/main.css",
-    "watch-css": "node-sass  --source-map true --watch src/sass/main.scss dist/css/main.css"
+    "css-build": "node-sass  --source-map true src/sass/main.scss dist/public_html/css/main.css",
+    "watch-css": "node-sass  --source-map true --watch src/sass/main.scss dist/public_html/css/main.css"
   },
   "author": "Niklas P Andersson",
   "license": "ISC",

@@ -3,6 +3,9 @@ import * as path from "path";
 
 import User from "../common/models/user";
 import {DBService} from "./services/DBService";
+import Post from '../common/models/post';
+
+const logModules = require('../conf/modules.json');
 
 const DEFAULT_PORT = 8080;
 
@@ -36,11 +39,6 @@ export class App
         if(!this.prod) {
             staticServe = express.static(path.join(__dirname, '../../public_html'));
             this.app.use(staticServe);
-            this.app.use(function(req, res, next) {
-                res.header("Access-Control-Allow-Origin", "*");
-                res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-                next();
-              });
         }
 
         this.app.use(express.json());
@@ -56,20 +54,27 @@ export class App
         })
 
         //Content
-        // this.app.get("/api/posts", async (req, res) => {
-        //     let data = await this.db.getContents() || [];
-        //     res.json(data);
-        // })
+        this.app.get("/api/posts", async (req:any, res) => {
+            let data = await this.db.getPosts(req.user._id) || [];
+            res.json(data);
+        })
+        this.app.post("/api/posts", async (req, res) => {
+            let post = req.body as Post;
+            post.userId = (req as any).user._id;
+            post.time = (new Date()).toUTCString();
+            let data = await this.db.createPost(post);
+            res.json(data);
+        })
+        this.app.put("/api/posts/:id/:module", async (req, res) => {
+            //TODO: require that userID of post matches current user
+            let data = await this.db.updatePostData(req.params.id, req.params.module, req.body);
+            res.json(data);
+        })        
 
-        // this.app.post("/api/posts", async (req, res) => {
-        //     let data = await this.db.createContent(req.body as IContent);
-        //     res.json(data);
-        // })
-
-        // this.app.put("/api/posts/:id", async (req, res) => {
-        //     let data = await this.db.updateContent(req.params.id, req.body as Partial<IContent>);
-        //     res.json(data);
-        // })
+        //modules
+        this.app.get("/api/modules", async (req:any, res) => {
+            res.json(logModules);
+        })
 
         /* final catch-all route to index.html defined last */
         if((!this.prod) && staticServe) {
@@ -102,6 +107,7 @@ export class App
     private devUserMiddleware(req, res, next) {
         let request: any = req;
         request.user = {
+            _id: "5c668cf01ce4ea19292d93fa",
             name: "Niklas",
             fullName: "Niklas Andersson",
             email: "niklaspandersson.se@gmail.se",

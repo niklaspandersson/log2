@@ -1,8 +1,9 @@
 import { Moment } from "moment";
 
 export default interface Post {
-    id: number;
+    _id?: string;
     data: object;
     time?: string|Moment;
-    userId?: number;
+    updated?: string;
+    userId?: string;
 }

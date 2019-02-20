@@ -6,7 +6,7 @@ import IViewProps from "./IViewProps";
 
 interface PostViewProps extends IViewProps {
     initialValue: any;
-    onSave: (data:any) => void;
+    onSaveLog: (data:any) => void;
 }
 
 
@@ -15,6 +15,6 @@ export default function PostView(props:PostViewProps) {
 
     return  <div className={classnames("post", props.className)}>
                 <textarea className="body" spellCheck={false} value={body} onChange={ev => setBody(ev.target.value)}></textarea>
-                <footer onClick={() => props.onSave(null)}>save</footer>
+                <footer className="clickable" onClick={() => props.onSaveLog({body})}>save</footer>
             </div>
 }
