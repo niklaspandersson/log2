@@ -10,21 +10,23 @@ export class DBService extends MongoDBService
         super(url, name);
     }
 
-    public getPosts(userId:string) {
+    public getPosts() {
         return this.guard(db => db.collection<Post>("posts").find().sort({'time': 1}).toArray());
     }
     public createPost(data:Post) {
         return this.guard(async db => {
             let result = await db.collection<Post>("posts").insertOne(data);
-            return  {...data, _id: result.insertedId.toHexString() };
+            return  {...data, _id: result.insertedId.toHexString() } as Post;
         });
     }
     public async updatePostData(id: string, module:string, data:any) {
         let val = {};
-        val['updated'] = (new Date()).toUTCString();
+        val['updated'] = (new Date()).toISOString();
         val[`data.${module}`] = data;
-        let res = await this.guard(db => db.collection<Post>("posts").updateOne({_id: ObjectID.createFromHexString(id) }, {$set: val}));
-        return res.modifiedCount === 1;
+        let res = await this.guard(db => db.collection<Post>("posts").findOneAndUpdate({_id: ObjectID.createFromHexString(id) }, {$set: val}, {returnOriginal: false}));
+        if(!res.ok)
+            throw new Error(res.lastErrorObject);
+        return res.value;
     }
 
     public getUser(email:string) {

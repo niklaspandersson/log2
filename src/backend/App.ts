@@ -6,7 +6,7 @@ import {DBService} from "./services/DBService";
 import Post from '../common/models/post';
 
 const logModules = require('../conf/modules.json');
-
+const defaultUserModules = require('../conf/default-user-modules.json');
 const DEFAULT_PORT = 8000;
 
 export class App
@@ -23,7 +23,7 @@ export class App
         this.app = express();
         this.setupEnviroment();
 
-	this.defaultModules = [["weather",true],["mood",false],["books",false],["log",true]]
+	    this.defaultModules = defaultUserModules;
         this.db = new DBService("mongodb://localhost:27017/", "log2");
         this.setupRoutes();
     }
@@ -32,17 +32,12 @@ export class App
         this.port = Number.parseInt(process.env.PORT) || DEFAULT_PORT;
 
         this.prod = (process.env.NODE_ENV === 'production');
-	console.log("prod == " + this.prod);
         this.app.use(this.prod ? this.prodUserMiddleware : this.devUserMiddleware)
     }
 
     private setupRoutes() {
-        //serve static files from the codetutor-frontend while we're developing
-        let staticServe = null;
-	// if(!this.prod) {
-            staticServe = express.static(path.join(__dirname, '../../public_html'));
-            this.app.use(staticServe);
-	    //}
+        let staticServe = express.static(path.join(__dirname, '../../public_html'));
+        this.app.use(staticServe);
 
         this.app.use(express.json());
 
@@ -58,13 +53,13 @@ export class App
 
         //Content
         this.app.get("/api/posts", async (req:any, res) => {
-            let data = await this.db.getPosts(req.user._id) || [];
+            let data = await this.db.getPosts() || [];
             res.json(data);
         })
         this.app.post("/api/posts", async (req, res) => {
             let post = req.body as Post;
-            post.userId = (req as any).user._id;
-            post.time = (new Date()).toUTCString();
+            post.user = (req as any).user.email;
+            post.time = (new Date()).toISOString();
             let data = await this.db.createPost(post);
             res.json(data);
         })
@@ -110,10 +105,9 @@ export class App
     private devUserMiddleware(req, res, next) {
         let request: any = req;
         request.user = {
-            _id: "5c668cf01ce4ea19292d93fa",
             name: "Niklas",
             fullName: "Niklas Andersson",
-            email: "niklaspandersson.se@gmail.se",
+            email: "niklaspandersson.se@gmail.com",
             pictureUrl: "https://lh3.googleusercontent.com/-Y29VGDp_tiA/AAAAAAAAAAI/AAAAAAAAAAQ/G6shmElDO6M/s96-c/photo.jpg",
             profileUrl: "https://plus.google.com/108993789665707522983"
         };

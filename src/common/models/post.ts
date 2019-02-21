@@ -5,5 +5,5 @@ export default interface Post {
     data: object;
     time?: string|Moment;
     updated?: string;
-    userId?: string;
+    user?: string;
 }

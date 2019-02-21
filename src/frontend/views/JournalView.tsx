@@ -3,6 +3,8 @@ import Post from "../../common/models/post";
 import classnames from "classnames";
 import moment, { Moment } from "moment";
 import IViewProps from "./IViewProps";
+import { string } from "prop-types";
+import { isString } from "util";
 
 interface JournalViewProps extends IViewProps {
     posts: Post[];
@@ -13,12 +15,14 @@ interface JournalViewProps extends IViewProps {
 function getPostText(data:any) {
     return (data && data.log && data.log.body) || "";
 }
-function getPostDateString(date:Moment) {
+function getPostDateString(date:Moment|string) {
+    if(isString(date))
+        date = moment(date as string);
     return <>{date.format("D")}<br />{date.format("MMM").toLocaleLowerCase()}</>
 }
 
 function PostListItem(post:Post&{select: (post:Post) => void}) {
-    let date = getPostDateString((post.time as unknown) as Moment);
+    let date = getPostDateString(post.time);
     let text = getPostText(post.data);
     return  <li>
                 <div className="post clickable" onClick={() => post.select(post)}>

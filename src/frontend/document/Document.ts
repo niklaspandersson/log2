@@ -50,7 +50,6 @@ export default class {
 
     async getUserPosts() {
         this.posts = await this.postService.getAll();
-        this.posts.forEach(post => (post.time as moment.Moment) = moment(post.time as string));
         return this.posts;
     }
     async createPost(data:any) {

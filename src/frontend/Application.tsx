@@ -10,6 +10,7 @@ import Icon from "./components/Icon";
 import moment = require("moment");
 import CreateNewPostView from "./views/CreateNewPostView";
 import PostView from "./views/PostView";
+import { isString } from "util";
 
 type ViewMode = "journal" | "new-post" | string;
 
@@ -131,21 +132,34 @@ export default class Application extends React.Component<{}, ApplicationState> {
                 postHeaderProps.title = this.getPostTitle();
                 const createNewPost = async (data:any) => {
                     let newPost = await this.document.createPost(data);
-                    this.setState({view: newPost._id, currentPost: newPost});
+                    this.setState((s, p) => {
+                        return {
+                            view: newPost._id, 
+                            currentPost: newPost, 
+                            posts: [...s.posts, newPost]
+                        };
+                    });
                 }
                 return [postHeaderProps, <CreateNewPostView className="view" modules={this.document.Modules} onComplete={data => createNewPost(data)} />];
             }
                 
             const saveLog = async (data:any) => {
-                await this.document.updateModuleData(this.state.currentPost._id, "log", data);
+                let newPost = await this.document.updateModuleData(this.state.currentPost._id, "log", data);
+                this.setState((s, p) => {
+                    let posts = [...s.posts];
+                    let index = posts.findIndex(p => p._id == newPost._id);
+                    posts[index] = newPost;
+                    return {posts};
+                });                
                 this.showJournal();
-            }        
+            }
+            postHeaderProps.title = this.getPostTitle(this.state.currentPost.time);
             return [postHeaderProps, <PostView className="view" initialValue={(this.state.currentPost && this.state.currentPost.data) || undefined} onSaveLog={data => saveLog(data)} />]
         } 
     }
 
-    private getPostTitle(date?:moment.Moment) {
-        date = date || this.document.Today; 
+    private getPostTitle(date?:string|moment.Moment) {
+        date = isString(date) ? moment(date) : (date || this.document.Today); 
         return <span className="post-title">{date.format("MMM D").toLocaleLowerCase()} <span className="year">{date.format("Y")}</span></span>;
     }
 }
