@@ -7,7 +7,7 @@ import Post from '../common/models/post';
 
 const logModules = require('../conf/modules.json');
 
-const DEFAULT_PORT = 8080;
+const DEFAULT_PORT = 8000;
 
 export class App
 {
@@ -17,11 +17,13 @@ export class App
     private db:DBService;
     
     private adminEmail:string;
+    private defaultModules:any;
 
     constructor() {
         this.app = express();
         this.setupEnviroment();
 
+	this.defaultModules = [["weather",true],["mood",false],["books",false],["log",true]]
         this.db = new DBService("mongodb://localhost:27017/", "log2");
         this.setupRoutes();
     }
@@ -30,16 +32,17 @@ export class App
         this.port = Number.parseInt(process.env.PORT) || DEFAULT_PORT;
 
         this.prod = (process.env.NODE_ENV === 'production');
+	console.log("prod == " + this.prod);
         this.app.use(this.prod ? this.prodUserMiddleware : this.devUserMiddleware)
     }
 
     private setupRoutes() {
         //serve static files from the codetutor-frontend while we're developing
         let staticServe = null;
-        if(!this.prod) {
+	// if(!this.prod) {
             staticServe = express.static(path.join(__dirname, '../../public_html'));
             this.app.use(staticServe);
-        }
+	    //}
 
         this.app.use(express.json());
 
@@ -47,7 +50,7 @@ export class App
             let oidUser:User = (req as any).user as User;
             let dbUser = await this.db.getUser(oidUser.email);
             if(!dbUser) {
-                dbUser = await this.db.createUser(oidUser);
+                dbUser = await this.db.createUser(oidUser, this.defaultModules);
             }
 
             res.json(dbUser);
@@ -77,7 +80,7 @@ export class App
         })
 
         /* final catch-all route to index.html defined last */
-        if((!this.prod) && staticServe) {
+        if(staticServe) {
             this.app.use('/', staticServe);
             this.app.use('*', staticServe);
 

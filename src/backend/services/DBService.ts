@@ -30,10 +30,11 @@ export class DBService extends MongoDBService
     public getUser(email:string) {
         return this.guard(db => db.collection<User>("users").findOne({email}));
     }
-    public createUser(model:User) {
-        return this.guard(async db => {
-            let result = await db.collection<User>("users").insertOne(model);
-            return {...model, _id: result.insertedId.toHexString() };
+    public createUser(model:User, defaultModules:any) {
+    return this.guard(async db => {
+    	    let m = {...model, modules: defaultModules};
+            let result = await db.collection<User>("users").insertOne(m);
+            return {...m, _id: result.insertedId.toHexString() };
         });
     }
 }

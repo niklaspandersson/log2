@@ -7,6 +7,7 @@
     "test": "json-server --watch ./test/data/db.json --static ./dist/public_html --port 8000 &",
     "build": "webpack",
     "build-backend": "tsc -p tsconfig-backend.json",
+    "serve-prod": "NODE_ENV=production node dist/backend/backend/main.js & ",
     "serve": "node dist/backend/backend/main.js",
     "css-build": "node-sass  --source-map true src/sass/main.scss dist/public_html/css/main.css",
     "watch-css": "node-sass  --source-map true --watch src/sass/main.scss dist/public_html/css/main.css"
