@@ -32,6 +32,34 @@
             flex: 1 1 auto;
         }
     }
+
+    .calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        grid-template-rows: repeat(5, 2.8em);
+        grid-gap: 2px;
+        gap: 2px;
+
+        .day {
+            border: 1px solid $accent-color;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .date {
+                
+            }
+
+            &.prev-month, &.next-month {
+                opacity: .4;
+            }
+
+            &.current {
+                background: $accent-background;
+            }
+        }
+    }
+
 }
 
 

@@ -1,83 +1,7 @@
 {
-    "users": [
-        { 
-            "id": 1, 
-            "name": "Niklas Andersson", 
-            "email": "niklaspandersson.se@gmail.com",
-            "modules": [
-                ["weather", true],
-                ["mood", true],
-                ["books", false],
-                ["log", true]
-            ]
-        }
-    ],
-    "modules": [
-        {
-            "key": "weather",
-            "title": "Hur var vädret?",
-            "type": "select",
-            "data": {
-                "options": [
-                    "sun", 
-                    "cloud-sun", 
-                    "cloud", 
-                    "drizzle", 
-                    "rain", 
-                    "cloud-flash", 
-                    "snow", 
-                    "snow-heavy"
-                ]
-            }
-        },
-        {
-            "key": "mood",
-            "title": "Vad är känslan?",
-            "type": "select",
-            "data": {
-                "options": [
-                    "grin", 
-                    "happy", 
-                    "sleep", 
-                    "unhappy", 
-                    "cry", 
-                    "angry"
-                ]
-            } 
-        },
-        {
-            "key": "log",
-            "type": "log",
-            "data": {
-                "phrases": [
-                    "Vad har jag gjort?",
-                    "Vad har jag sett?",
-                    "Hur har det gått?",
-                    "Hur känns det?",
-                    "Vad har hänt?",
-                    "Vad har jag hört?",
-                    "den där idén...",
-                    ""                
-                ]
-            }
-        },
-        {
-            "key": "books",
-            "type": "multi-select",
-            "title": "mina böcker",
-            "data": {
-                "annotated": true,
-                "options": [
-                    "started",
-                    "finished"
-                ]
-            }
-        }
-    ],
-
     "posts": [
         { 
-            "id": 1, 
+            "id": "kyutjhg", 
             "data": {
                 "weather": { "weather": "sun", "more-weather-data": "hello" },
                 "mood": "grinning",
@@ -89,7 +13,7 @@
             "userId": 1 
         },
         { 
-            "id": 2, 
+            "id": "erwfs", 
             "data": {
                 "weather": { "weather": "cloud", "more-weather-data": "hello" },
                 "mood": "unhappy",
@@ -101,7 +25,7 @@
             "userId": 1 
         },
         { 
-            "id": 3, 
+            "id": "asdc", 
             "data": {
                 "weather": { "weather": "sun" },
                 "mood": "happy",
