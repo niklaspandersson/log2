@@ -4,16 +4,19 @@
         "moduleResolution": "node",
         "pretty": true,
         "sourceMap": true,
+        "esModuleInterop": true,
         "target": "es6",
+        "rootDir": "./src",
         "outDir": "./dist/backend",
         "baseUrl": "./src"
     },
-    "include": [
-        "src/common/**/*.ts",
-        "src/backend/**/*.ts"
+    "includes": [
+        "src/common",
+        "src/backend"
     ],
     "exclude": [
         "node_modules",
-        "src/frontend"
+        "src/frontend",
+        "test"
     ]
 }

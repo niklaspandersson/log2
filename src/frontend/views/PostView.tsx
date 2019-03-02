@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import Post from "../../common/models/post";
+import {Post} from "../../common/models/post";
 import classnames from "classnames";
-import moment, { Moment } from "moment";
 import IViewProps from "./IViewProps";
 
 interface PostViewProps extends IViewProps {

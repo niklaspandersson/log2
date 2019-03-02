@@ -2,16 +2,21 @@ export default interface Module {
     key: string;
     title?: string;
     type: string;
-    data: MultiSelectModuleData|SelectModuleData | LogModuleData;
+    data: MultiSelectModuleSettings|SelectModuleSettings | LogModuleSettings;
 }
 
-export interface SelectModuleData {
+type ModuleTypes = "select"|"log"|"multiselect";
+
+export interface ModuleData {
+
+}
+export interface SelectModuleSettings {
     options: string[];
 }
-export interface MultiSelectModuleData {
+export interface MultiSelectModuleSettings {
     annotated: boolean;
     options: string[];
 }
-export interface LogModuleData {
+export interface LogModuleSettings {
     phrases: string[];
 }

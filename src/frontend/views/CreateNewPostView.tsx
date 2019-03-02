@@ -1,8 +1,8 @@
 import React, {useState} from "react";
-import Post from "../../common/models/post";
+import {Post} from "../../common/models/post";
 import classnames from "classnames";
 import IViewProps from "./IViewProps";
-import Module, { SelectModuleData, LogModuleData } from "../../common/models/module";
+import Module, { SelectModuleSettings, LogModuleSettings } from "../../common/models/module";
 import Icon from "../components/Icon";
 import useDebounce from "../utils/useDebounce";
 
@@ -15,7 +15,7 @@ interface ModuleProps extends Module {
     onSelect: (val:any) => void;
 }
 function SelectModuleView(props:ModuleProps) {
-    let data = props.data as SelectModuleData;
+    let data = props.data as SelectModuleSettings;
 
     const [value, setValue] = useState("");
 
@@ -33,7 +33,7 @@ function SelectModuleView(props:ModuleProps) {
 }
 
 function LogModuleView(props:ModuleProps) {
-    let data = props.data as LogModuleData;
+    let data = props.data as LogModuleSettings;
 
     const [value, setValue] = useState("");
 

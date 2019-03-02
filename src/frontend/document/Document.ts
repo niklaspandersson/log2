@@ -2,16 +2,17 @@ import UserService from "../services/UserService";
 import ModulesService from "../services/ModulesService";
 import User from "../../common/models/user";
 import Module from "../../common/models/module";
-import Post from "../../common/models/post";
+import {Post, IPost} from "../../common/models/post";
 import PostService from "../services/PostService";
-import moment = require("moment");
+import {Moment} from "moment";
+import moment from "moment";
 
 export default class {
     private userService: UserService;
     private modulesService: ModulesService;
     private postService: PostService;
 
-    private today:moment.Moment = null;
+    private today:Moment = null;
     public get Today() { return this.today; }
 
     private user:User = null;
@@ -26,7 +27,7 @@ export default class {
     public get Modules() { return this.modules; }
 
     public get HasPostToday() {
-        return this.posts && !!this.posts.find(p => this.Today.isSame(((p.time as unknown) as moment.Moment), 'day'));        
+        return this.posts && !!this.posts.find(p => this.Today.isSame(p.time, 'day'));        
     }
 
     constructor() {
@@ -49,14 +50,15 @@ export default class {
     }
 
     async getUserPosts() {
-        this.posts = await this.postService.getAll();
+        //TODO: just fetch current and prevous month. Get the rest on demand
+        this.posts = (await this.postService.getAll()).map(p => new Post(p));
         return this.posts;
     }
-    async createPost(data:any) {
-        return await this.postService.create({data});
+    async createPost(date:Moment, data:any) {
+        return new Post(await this.postService.create({date: date.format("YYYY-MM-DD"), data}));
     }
     async updateModuleData(postId:string, mod:string, data:any) {
-        return await this.postService.updateModuleData(postId, mod, data);
+        return new Post(await this.postService.updateModuleData(postId, mod, data));
     }
 
     private getUserModules(appModules:Module[]) {

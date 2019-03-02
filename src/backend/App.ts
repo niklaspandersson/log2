@@ -1,9 +1,9 @@
-import * as express from 'express';
+import express from 'express';
 import * as path from "path";
 
 import User from "../common/models/user";
 import {DBService} from "./services/DBService";
-import Post from '../common/models/post';
+import {IPost} from '../common/models/post';
 
 const logModules = require('../conf/modules.json');
 const defaultUserModules = require('../conf/default-user-modules.json');
@@ -57,9 +57,10 @@ export class App
             res.json(data);
         })
         this.app.post("/api/posts", async (req, res) => {
-            let post = req.body as Post;
+            let post = req.body as IPost;
+            console.log(post);
             post.user = (req as any).user.email;
-            post.time = (new Date()).toISOString();
+            post.created = (new Date()).toISOString();
             let data = await this.db.createPost(post);
             res.json(data);
         })

@@ -1,7 +1,7 @@
 import MongoDBService from "./MongoDBService";
 
 import User from "../../common/models/user";
-import Post from "../../common/models/post";
+import {IPost} from "../../common/models/post";
 import { ObjectID } from "bson";
 
 export class DBService extends MongoDBService
@@ -11,19 +11,19 @@ export class DBService extends MongoDBService
     }
 
     public getPosts() {
-        return this.guard(db => db.collection<Post>("posts").find().sort({'time': 1}).toArray());
+        return this.guard(db => db.collection<IPost>("posts").find().sort({'created': 1}).toArray());
     }
-    public createPost(data:Post) {
+    public createPost(data:IPost) {
         return this.guard(async db => {
-            let result = await db.collection<Post>("posts").insertOne(data);
-            return  {...data, _id: result.insertedId.toHexString() } as Post;
+            let result = await db.collection<IPost>("posts").insertOne(data);
+            return  {...data, _id: result.insertedId.toHexString() } as IPost;
         });
     }
     public async updatePostData(id: string, module:string, data:any) {
         let val = {};
         val['updated'] = (new Date()).toISOString();
         val[`data.${module}`] = data;
-        let res = await this.guard(db => db.collection<Post>("posts").findOneAndUpdate({_id: ObjectID.createFromHexString(id) }, {$set: val}, {returnOriginal: false}));
+        let res = await this.guard(db => db.collection<IPost>("posts").findOneAndUpdate({_id: ObjectID.createFromHexString(id) }, {$set: val}, {returnOriginal: false}));
         if(!res.ok)
             throw new Error(res.lastErrorObject);
         return res.value;

@@ -17,7 +17,7 @@ export default class FetchService<T>
     }
 
     async create(data:T) {
-        return this.doFetch(this.url, this.createOptions("POST", data));
+        return this.doFetch(this.url, this.createOptions("POST", data)) as Promise<T>;
     }
     async update(id:string, data:Partial<T>) {
         return this.doFetch(`${this.url}/${id}`, this.createOptions("PUT", data));

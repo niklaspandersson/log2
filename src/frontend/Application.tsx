@@ -3,11 +3,10 @@ import classnames from "classnames";
 import Loader from "./components/Loader";
 import AppDocument from "./document/Document";
 import SidePanel from "./components/SidePanel";
-import Module from "./../common/models/module";
-import Post from "./../common/models/post";
+import {Post} from "./../common/models/post";
 import JournalView from "./views/JournalView";
 import Icon from "./components/Icon";
-import moment = require("moment");
+import moment, { Moment } from "moment";
 import CreateNewPostView from "./views/CreateNewPostView";
 import PostView from "./views/PostView";
 import { isString } from "util";
@@ -19,7 +18,7 @@ interface ApplicationState {
     view: ViewMode;
     posts: Post[];
     hasPostToday: boolean;
-    currentPost?: Post;
+    currentPost?: Post|Moment|null;
 }
 
 
@@ -119,9 +118,13 @@ export default class Application extends React.Component<{}, ApplicationState> {
             const openPost = (post:Post) => {
                 this.setState({currentPost: post, view: post._id });
             }
+            const createPost = (date:Moment) => {
+                console.log(`Creating post for ${date.toLocaleString()}`);
+                this.setState({currentPost: date, view: "new-post"});
+            }
 
             if(this.state.posts)
-                return [defaultHeaderProps, <JournalView className="view" onSelectPost={post => openPost(post)} hasPostToday={this.state.hasPostToday} posts={this.state.posts} />];
+                return [defaultHeaderProps, <JournalView today={this.document.Today} className="view" onCreatePost={date => createPost(date)} onSelectPost={post => openPost(post)} hasPostToday={this.state.hasPostToday} posts={this.state.posts} />];
             else
                 return [defaultHeaderProps, null as JSX.Element];
         }
@@ -129,9 +132,10 @@ export default class Application extends React.Component<{}, ApplicationState> {
         {
             let postHeaderProps:AppHeaderProps = { menuIcon: "back", menuAction: this.showJournal }
             if(this.state.view === "new-post") {
-                postHeaderProps.title = this.getPostTitle();
+                let date = this.state.currentPost as Moment || this.document.Today;
+                postHeaderProps.title = this.getPostTitle(date);
                 const createNewPost = async (data:any) => {
-                    let newPost = await this.document.createPost(data);
+                    let newPost = await this.document.createPost(date, data);
                     this.setState((s, p) => {
                         return {
                             view: newPost._id, 
@@ -143,8 +147,9 @@ export default class Application extends React.Component<{}, ApplicationState> {
                 return [postHeaderProps, <CreateNewPostView className="view" modules={this.document.Modules} onComplete={data => createNewPost(data)} />];
             }
                 
+            let currentPost = this.state.currentPost as Post;
             const saveLog = async (data:any) => {
-                let newPost = await this.document.updateModuleData(this.state.currentPost._id, "log", data);
+                let newPost = await this.document.updateModuleData(currentPost._id, "log", data);
                 this.setState((s, p) => {
                     let posts = [...s.posts];
                     let index = posts.findIndex(p => p._id == newPost._id);
@@ -153,13 +158,12 @@ export default class Application extends React.Component<{}, ApplicationState> {
                 });                
                 this.showJournal();
             }
-            postHeaderProps.title = this.getPostTitle(this.state.currentPost.time);
-            return [postHeaderProps, <PostView className="view" initialValue={(this.state.currentPost && this.state.currentPost.data) || undefined} onSaveLog={data => saveLog(data)} />]
+            postHeaderProps.title = this.getPostTitle(currentPost.time);
+            return [postHeaderProps, <PostView className="view" initialValue={(currentPost && currentPost.data) || undefined} onSaveLog={data => saveLog(data)} />]
         } 
     }
 
-    private getPostTitle(date?:string|moment.Moment) {
-        date = isString(date) ? moment(date) : (date || this.document.Today); 
+    private getPostTitle(date:moment.Moment) { 
         return <span className="post-title">{date.format("MMM D").toLocaleLowerCase()} <span className="year">{date.format("Y")}</span></span>;
     }
 }
