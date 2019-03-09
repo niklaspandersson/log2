@@ -80,7 +80,7 @@ function getDays(date:Moment, posts:Post[], onClick:(date:Moment, post:Post)=>vo
     for(let i=0; i<numDays;++i) {
         let d = first.clone().add(i, 'days');
         let diff = d.diff(today, 'days');
-        let post = posts.find(p => p.time.date() == d.date() && d.month() === month && d.year() == d.year());
+        let post = posts.find(p => p.time.isSame(d, 'day'));
         days.push(<DayOfMonth onClick={onClick} key={d.format()} post={post} date={d} distance={diff} prevMonth={d.month() < month} nextMonth={d.month() > month} />)
     }
 
@@ -113,8 +113,8 @@ function RenderCalendar(props:JournalViewProps) {
     }
     let last = props.today.clone().subtract(1, 'month');
     return  <>
-                <Month onDayClick={handleCalendarClick} date={last} posts={props.posts.filter(p => p.time.month() === last.month() && p.time.year() == last.year())} />
-                <Month onDayClick={handleCalendarClick} date={props.today} posts={props.posts.filter(p => p.time.month() === props.today.month() && p.time.year() == props.today.year())} />
+                <Month onDayClick={handleCalendarClick} date={last} posts={props.posts} />
+                <Month onDayClick={handleCalendarClick} date={props.today} posts={props.posts} />
             </>
 }
 

@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import {Post} from "../../common/models/post";
 import classnames from "classnames";
 import IViewProps from "./IViewProps";
+import Module from "../../common/models/module";
 
 interface PostViewProps extends IViewProps {
     initialValue: any;
+    modules: Module[],
     onSaveLog: (data:any) => void;
+    onSaveModule: (key:string, data:any) => void;
 }
 
 

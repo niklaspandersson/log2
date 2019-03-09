@@ -3,7 +3,7 @@
         { 
             "id": "kyutjhg", 
             "data": {
-                "weather": { "weather": "sun", "more-weather-data": "hello" },
+                "weather": "sun",
                 "mood": "grinning",
                 "log": {
                     "body": "log log log"
@@ -15,7 +15,7 @@
         { 
             "id": "erwfs", 
             "data": {
-                "weather": { "weather": "cloud", "more-weather-data": "hello" },
+                "weather": "cloud",
                 "mood": "unhappy",
                 "log": {
                     "body": "log log loglkajs fdhljhfdkjlashdf kjahskjhkljasfdh lakjh jkashdf kjhfjasd kjhads fkjas h"
@@ -27,7 +27,7 @@
         { 
             "id": "asdc", 
             "data": {
-                "weather": { "weather": "sun" },
+                "weather":"sun",
                 "mood": "happy",
                 "log": {
                     "body": "log log log"

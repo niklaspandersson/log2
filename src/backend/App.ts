@@ -79,7 +79,6 @@ export class App
         if(staticServe) {
             this.app.use('/', staticServe);
             this.app.use('*', staticServe);
-
         }
     }
 
@@ -88,7 +87,6 @@ export class App
             console.log('Express server listening on port ' + this.port);
         })
     }
-
 
     private prodUserMiddleware(req, res, next) {
         if(req.header("OIDC_access_token")) {
@@ -103,6 +101,7 @@ export class App
         }
         next();
     }
+    
     private devUserMiddleware(req, res, next) {
         let request: any = req;
         request.user = {

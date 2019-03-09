@@ -158,8 +158,18 @@ export default class Application extends React.Component<{}, ApplicationState> {
                 });                
                 this.showJournal();
             }
+            const saveModule = async (key:string, data:any) => {
+                let newPost = await this.document.updateModuleData(currentPost._id, key, data);
+                this.setState((s, p) => {
+                    let posts = [...s.posts];
+                    let index = posts.findIndex(p => p._id == newPost._id);
+                    posts[index] = newPost;
+                    return {posts};
+                });                
+            }
+
             postHeaderProps.title = this.getPostTitle(currentPost.time);
-            return [postHeaderProps, <PostView className="view" initialValue={(currentPost && currentPost.data) || undefined} onSaveLog={data => saveLog(data)} />]
+            return [postHeaderProps, <PostView className="view" modules={this.document.Modules} initialValue={(currentPost && currentPost.data) || undefined} onSaveModule={(key:string, data:any) => saveModule(key, data)} onSaveLog={data => saveLog(data)} />]
         } 
     }
 
