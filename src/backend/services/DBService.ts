@@ -13,6 +13,9 @@ export class DBService extends MongoDBService
     public getPosts() {
         return this.guard(db => db.collection<IPost>("posts").find().sort({'created': 1}).toArray());
     }
+    public getModules() {
+    	return this.guard(db => db.collection<any>("modules").find().toArray());
+    }
     public createPost(data:IPost) {
         return this.guard(async db => {
             let result = await db.collection<IPost>("posts").insertOne(data);

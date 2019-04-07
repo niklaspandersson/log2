@@ -1,7 +1,4 @@
-dist/public_html/js
-dist/backend
-dist/public_html/css/main.*
-dist/public_html/font
+dist
 node_modules
 src/sass/fontello/css
 src/sass/fontello/font

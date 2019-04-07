@@ -1,4 +1,6 @@
 const path = require("path");
+const HtmlPlugin = require('html-webpack-plugin');
+const CssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
     mode: "development",
@@ -6,20 +8,30 @@ module.exports = {
     entry: "./src/frontend/index.tsx",
 
     output: {
-        filename: '[name].bundle.js',
-        chunkFilename: 'common.js',
-        path: path.resolve(__dirname, 'dist/public_html/js')
-      },
-      optimization: {
-          splitChunks: {
-              chunks: 'all'
-          }
-      },
+      filename: '[name].bundle.js',
+      chunkFilename: 'common.js',
+      path: path.resolve(__dirname, 'dist/public_html/js')
+    },
+    optimization: {
+      splitChunks: {
+        chunks: 'all'
+      }
+    },
+    plugins: [
+      new HtmlPlugin({
+	      hash: true,
+	      template: './src/index.html',
+	      filename: '../index.html'
+      }),
+      new CssExtractPlugin({
+	      filename: '../css/main.css'
+      })
+    ],
     
     devtool: "source-map",
 
     resolve: {
-        extensions: [".ts", ".tsx", ".js", ".jsx"]
+        extensions: [".ts", ".tsx", ".js", ".jsx", "*.scss", "*.css"]
     },
     
     module: {
@@ -38,7 +50,16 @@ module.exports = {
                 enforce: "pre", 
                 test: /\.js$/, 
                 loader: "source-map-loader" 
-            }
+            },
+	    {
+		test: /\.s?css$/,
+		use: [
+			"style-loader",
+			CssExtractPlugin.loader,
+			"css-loader",
+			"sass-loader"
+		]
+    	    }
         ]
     }
 };

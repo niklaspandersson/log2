@@ -5,9 +5,29 @@ import User from "../common/models/user";
 import {DBService} from "./services/DBService";
 import {IPost} from '../common/models/post';
 
-const logModules = require('../conf/modules.json');
-const defaultUserModules = require('../conf/default-user-modules.json');
-const DEFAULT_PORT = 8000;
+const defaultUserModules = [
+  [
+    "weather",
+    true
+  ],
+  [
+    "mood",
+    false
+  ],
+  [
+    "books",
+    false
+  ],
+  [
+    "log",
+    true
+  ]
+];
+
+const PORT = process.env.PORT || '8000';
+const DB_HOST = process.env.DB_HOST || process.env.HOST_IP || '127.0.0.1';
+const DB_PORT = process.env.DB_PORT || 27017;
+const DB_NAME = process.env.DB_NAME || "log2";
 
 export class App
 {
@@ -23,20 +43,20 @@ export class App
         this.app = express();
         this.setupEnviroment();
 
-	    this.defaultModules = defaultUserModules;
-        this.db = new DBService("mongodb://localhost:27017/", "log2");
+	this.defaultModules = defaultUserModules;
+        this.db = new DBService("mongodb://" + DB_HOST + ":" + DB_PORT + "/", DB_NAME);
         this.setupRoutes();
     }
 
     private setupEnviroment() {
-        this.port = Number.parseInt(process.env.PORT) || DEFAULT_PORT;
+        this.port = Number.parseInt(PORT);
 
         this.prod = (process.env.NODE_ENV === 'production');
         this.app.use(this.prod ? this.prodUserMiddleware : this.devUserMiddleware)
     }
 
     private setupRoutes() {
-        let staticServe = express.static(path.join(__dirname, '../../public_html'));
+   	let staticServe = express.static(path.join(__dirname, '../../public_html/'));
         this.app.use(staticServe);
 
         this.app.use(express.json());
@@ -72,12 +92,13 @@ export class App
 
         //modules
         this.app.get("/api/modules", async (req:any, res) => {
-            res.json(logModules);
+	    let data = await this.db.getModules() || [];
+            res.json(data);
         })
 
         /* final catch-all route to index.html defined last */
         if(staticServe) {
-            this.app.use('/', staticServe);
+	    this.app.use('/', staticServe);
             this.app.use('*', staticServe);
         }
     }
