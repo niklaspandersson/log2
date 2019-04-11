@@ -10,6 +10,7 @@ import moment, { Moment } from "moment";
 import CreateNewPostView from "./views/CreateNewPostView";
 import PostView from "./views/PostView";
 import { isString } from "util";
+import GoogleLogin from "react-google-login";
 
 type ViewMode = "journal" | "new-post" | string;
 
@@ -45,6 +46,7 @@ function LoginView(props:any) {
 function ApplicationMenu(props:any) {
     return  <div className="application-menu">
                 <ApplicationHeader />
+                <GoogleLogin />
             </div>
 }
 
