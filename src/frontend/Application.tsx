@@ -9,20 +9,21 @@ import Icon from "./components/Icon";
 import moment, { Moment } from "moment";
 import CreateNewPostView from "./views/CreateNewPostView";
 import PostView from "./views/PostView";
-import { isString } from "util";
-import GoogleLogin from "react-google-login";
+import GoogleLogin, { GoogleLoginResponse, GoogleLoginResponseOffline } from "react-google-login";
+
 
 type ViewMode = "journal" | "new-post" | string;
 
 interface ApplicationState {
     isMenuVisible:boolean;
+    isLoggedIn: boolean;
     view: ViewMode;
     posts: Post[];
     hasPostToday: boolean;
     currentPost?: Post|Moment|null;
 }
 
-
+const CLIENT_ID = "422996462760-r53gj3lqgjf209pgbnpcddjvoqrl1d4u.apps.googleusercontent.com";
 
 type MenuIcon = "menu"|"back"|null;
 interface AppHeaderProps {
@@ -43,11 +44,36 @@ function LoginView(props:any) {
     return  <div>Login</div>
 }
 
-function ApplicationMenu(props:any) {
+interface IAppMenuProps {
+    isLoggedIn: boolean;
+    onSocialLoginResult: (tokens:string) => void;
+}
+
+class ApplicationMenu extends React.Component<IAppMenuProps, {}> {
+    constructor(props:any)
+    {
+        super(props)
+    }
+
+    private onLoginSuccess(res:GoogleLoginResponse|GoogleLoginResponseOffline) {
+        let token = (res as any).tokenId;
+        this.props.onSocialLoginResult(token);
+        console.log(res);
+    }
+    private onLoginFail(res:GoogleLoginResponse|GoogleLoginResponseOffline) {
+        this.props.onSocialLoginResult(null);
+    }
+
+    render() 
+    {
     return  <div className="application-menu">
                 <ApplicationHeader />
-                <GoogleLogin />
+                { this.props.isLoggedIn 
+                    ? "Inloggad"
+                     : <GoogleLogin clientId={CLIENT_ID} onSuccess={res => this.onLoginSuccess(res)} onFailure={res => this.onLoginFail(res)} />
+                }
             </div>
+    }
 }
 
 export default class Application extends React.Component<{}, ApplicationState> {
@@ -59,6 +85,7 @@ export default class Application extends React.Component<{}, ApplicationState> {
         this.document = new AppDocument();
         this.state = {
             isMenuVisible: false,
+            isLoggedIn: false,
             posts: null,
             hasPostToday: false,
             view: "journal"
@@ -67,23 +94,6 @@ export default class Application extends React.Component<{}, ApplicationState> {
         this.hideMenu = this.hideMenu.bind(this);
         this.showMenu = this.showMenu.bind(this);
         this.showJournal = this.showJournal.bind(this);
-    }
-
-    componentDidMount() {
-        this.init();
-    }
-
-    private async init() {
-        try {
-            await this.document.init();
-
-            let posts = await this.document.getUserPosts();
-            let hasPostToday = this.document.HasPostToday;
-            this.setState({posts, hasPostToday, view: hasPostToday ? "journal" : "new-post"});
-        }
-        catch(err) {
-            console.error(err);
-        }
     }
 
     hideMenu() {
@@ -96,6 +106,24 @@ export default class Application extends React.Component<{}, ApplicationState> {
         this.setState({view: "journal", currentPost: null});
     }
 
+    private onSocialLogin = async (token:string) => {
+        if(token) {
+            try {
+                let user = await this.document.login(token);
+                this.setState({isLoggedIn: true, isMenuVisible: false});
+                console.log(user);
+    
+                await this.document.init();
+                let posts = await this.document.getUserPosts();
+                let hasPostToday = this.document.HasPostToday;
+                this.setState({posts, hasPostToday, view: hasPostToday ? "journal" : "new-post"});
+            }
+            catch(err) {
+                console.error(err);
+            }
+        }
+    }
+
     render() {
         const [menuProps, contents] = this.getContents();
         const theme = "theme-default";
@@ -106,7 +134,7 @@ export default class Application extends React.Component<{}, ApplicationState> {
                         <Loader>{contents}</Loader>
                     </div>
                     <SidePanel className={theme} visible={this.state.isMenuVisible} onHide={this.hideMenu}>
-                        <ApplicationMenu />
+                        <ApplicationMenu isLoggedIn={this.state.isLoggedIn} onSocialLoginResult={this.onSocialLogin} />
                     </SidePanel>
                 </>
     }

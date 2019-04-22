@@ -1,4 +1,4 @@
-import UserService from "../services/UserService";
+import LoginService from "../services/LoginService";
 import ModulesService from "../services/ModulesService";
 import User from "../../common/models/user";
 import Module from "../../common/models/module";
@@ -6,9 +6,10 @@ import {Post, IPost} from "../../common/models/post";
 import PostService from "../services/PostService";
 import {Moment} from "moment";
 import moment from "moment";
+import { userInfo } from "os";
 
-export default class {
-    private userService: UserService;
+export default class Document {
+    private loginService: LoginService;
     private modulesService: ModulesService;
     private postService: PostService;
 
@@ -32,21 +33,24 @@ export default class {
 
     constructor() {
         this.today = moment();
-        this.userService = new UserService("/api/user");
+        this.loginService = new LoginService("/api/login");
         this.modulesService = new ModulesService("/api/modules");
         this.postService = new PostService("/api/posts");
     }
 
     async init() {
-        let user = this.userService.get();
-        let modules = this.modulesService.getAll();
-
-        let res = await Promise.all([user, modules]);
-        this.user = res[0];
-        
-        this.modules = this.getUserModules(res[1]);
+        let modules = await this.modulesService.getAll();
+        this.modules = this.getUserModules(modules);
 
         return this.modules;
+    }
+
+    async login(idToken:string) {
+        let jwt = await this.loginService.login(idToken);
+        this.user = Document.ExtractUser(jwt);
+        this.postService.authToken = jwt;
+
+        return this.user;
     }
 
     async getUserPosts() {
@@ -64,5 +68,12 @@ export default class {
     private getUserModules(appModules:Module[]) {
         let userModules = this.user.modules.map(m => m[1] ? m[0] : null).filter(s => s !== null);
         return appModules.filter(m => userModules.find(um => um === m.key) != null )
+    }
+
+    private static ExtractUser(jwt:string) {
+        let [header,payloadStr,sign] = jwt.split(".");
+        let payload:any = JSON.parse(atob(payloadStr));
+        return payload.user as User;
+
     }
 }
