@@ -1,9 +1,9 @@
 import express from 'express';
 import * as path from "path";
 import * as jwt from "jsonwebtoken";
+import * as dotenv from "dotenv";
 import { OAuth2Client } from "google-auth-library";
 
-import User from "../common/models/user";
 import { DBService } from "./services/DBService";
 import { IPost } from '../common/models/post';
 
@@ -26,6 +26,9 @@ const defaultUserModules = [
     ]
 ];
 
+console.log(`CWD: ${process.cwd()}`);
+dotenv.config();
+
 const PORT = process.env.PORT || '8000';
 const DB_HOST = process.env.DB_HOST || process.env.HOST_IP || '127.0.0.1';
 const DB_PORT = process.env.DB_PORT || 27017;
@@ -36,7 +39,6 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 export class App {
     public app: express.Application;
     private port: number;
-    private prod: boolean;
     private db: DBService;
     private oauth2Client: OAuth2Client;
 
@@ -45,21 +47,15 @@ export class App {
 
     constructor() {
         this.authMiddleware = this.authMiddleware.bind(this);
-
         this.oauth2Client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
         this.app = express();
-        this.setupEnviroment();
+        this.port = Number.parseInt(PORT);
 
         this.defaultModules = defaultUserModules;
         this.db = new DBService("mongodb://" + DB_HOST + ":" + DB_PORT + "/", DB_NAME);
+        
         this.setupRoutes();
-    }
-
-    private setupEnviroment() {
-        this.port = Number.parseInt(PORT);
-
-        this.prod = (process.env.NODE_ENV === 'production');
     }
 
     private setupRoutes() {
@@ -81,6 +77,9 @@ export class App {
                     email: profile["email"],
                     modules: undefined
                 };
+
+                if(profileUser.email !== "niklaspandersson.se@gmail.com")
+                    throw new Error("Unauthorized user");
 
                 let dbUser = null;
                 try

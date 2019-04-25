@@ -5,3 +5,4 @@ src/sass/fontello/font
 src/sass/fontello/*.txt
 src/sass/fontello/*.html
 conf
+.env
