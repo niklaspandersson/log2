@@ -2,10 +2,16 @@ import express from 'express';
 import * as path from "path";
 import * as jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
-import { OAuth2Client } from "google-auth-library";
 
 import { DBService } from "./services/DBService";
+import AuthService, { IAuthApiTokens, IAuthTokenPayload } from './services/AuthService';
+import UserService from "./services/UserService";
+import User from '../common/models/user';
 import { IPost } from '../common/models/post';
+
+export interface IAuthApiPayload extends IAuthApiTokens {
+    user: User;
+};
 
 const defaultUserModules = [
     [
@@ -30,7 +36,7 @@ console.log(`CWD: ${process.cwd()}`);
 dotenv.config();
 
 const PORT = process.env.PORT || '8000';
-const DB_HOST = process.env.DB_HOST || process.env.HOST_IP || '127.0.0.1';
+const DB_HOST = process.env.DB_HOST || '127.0.0.1';
 const DB_PORT = process.env.DB_PORT || 27017;
 const DB_NAME = process.env.DB_NAME || "log2";
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -40,21 +46,19 @@ export class App {
     public app: express.Application;
     private port: number;
     private db: DBService;
-    private oauth2Client: OAuth2Client;
 
-    private adminEmail: string;
-    private defaultModules: any;
+    private authService: AuthService;
+    private userService: UserService;
 
     constructor() {
-        this.authMiddleware = this.authMiddleware.bind(this);
-        this.oauth2Client = new OAuth2Client(GOOGLE_CLIENT_ID);
-
         this.app = express();
         this.port = Number.parseInt(PORT);
 
-        this.defaultModules = defaultUserModules;
         this.db = new DBService("mongodb://" + DB_HOST + ":" + DB_PORT + "/", DB_NAME);
-        
+
+        this.userService = new UserService(this.db, GOOGLE_CLIENT_ID);
+        this.authService = new AuthService(JWT_SECRET);
+
         this.setupRoutes();
     }
 
@@ -64,59 +68,48 @@ export class App {
 
         this.app.use(express.json());
 
-        this.app.post("/api/login", async (req, res) => {
-
+        //auth
+        this.app.post("/api/auth/login", async (req, res) => {
             try {
-                let token = req.body.id_token;
-                let profile = await this.verifyGoogleIdToken(token);
-
-                let profileUser = {
-                    fullName: profile["name"],
-                    name: profile["given_name"],
-                    pictureUrl: profile["picture"],
-                    email: profile["email"],
-                    modules: undefined
-                };
-
-                if(profileUser.email !== "niklaspandersson.se@gmail.com")
-                    throw new Error("Unauthorized user");
-
-                let dbUser = null;
-                try
-                {
-                    dbUser = await this.db.getUser(profile["email"]);
-                    if (!dbUser) {
-                        dbUser = await this.db.createUser(profileUser, this.defaultModules);
-                    }
-                }
-                catch(err) {
-                    console.log(err);
-                    console.log("failed to access database - continuing anyway");
-                }
-
-                let awtUser = dbUser || {...profileUser, modules: this.defaultModules};
-                res.json({token: this.createToken(awtUser)});
+                const user = await this.userService.handleLogin(req.body.id_token);
+                if(!user)
+                    throw new Error("No matching user found");
+                const result: IAuthApiPayload = { ...this.authService.createTokens(user._id), user };
+                res.json(result);
             }
             catch (err) {
                 console.error(err);
                 res.sendStatus(401);
             }
-        })
+        });
+        this.app.post("/api/auth/refresh", (req, res, next) => this.authService.authMiddleware(req, res, next, true), async (req, res) => {
+            try {
+                const auth = res.locals.auth as IAuthTokenPayload;
+                const user = await this.db.getUser(auth.userId);
+                const result: IAuthApiPayload = { ...this.authService.createTokens(auth.userId), user };
+
+                res.json(result);
+            }
+            catch (err) {
+                console.error(err);
+                res.sendStatus(401);
+            }
+        });
 
         //Content
-        this.app.get("/api/posts", this.authMiddleware, async (req: any, res) => {
+        this.app.get("/api/posts", this.authService.authMiddleware, async (req: any, res) => {
             let data = await this.db.getPosts() || [];
             res.json(data);
         })
-        this.app.post("/api/posts", this.authMiddleware, async (req, res) => {
+        this.app.post("/api/posts", this.authService.authMiddleware, async (req, res) => {
             let post = req.body as IPost;
             console.log(post);
-            post.user = res.locals.user.email;
+            post.user = res.locals.auth.userId;
             post.created = (new Date()).toISOString();
             let data = await this.db.createPost(post);
             res.json(data);
         })
-        this.app.put("/api/posts/:id/:module", this.authMiddleware, async (req, res) => {
+        this.app.put("/api/posts/:id/:module", this.authService.authMiddleware, async (req, res) => {
             //TODO: require that userID of post matches current user
             let data = await this.db.updatePostData(req.params.id, req.params.module, req.body);
             res.json(data);
@@ -140,42 +133,4 @@ export class App {
             console.log('Express server listening on port ' + this.port);
         })
     }
-
-    private authMiddleware(req: express.Request, res: express.Response, next: express.NextFunction) {
-        try {
-            let user = this.checkToken(req);
-            res.locals.user = user;
-            next();
-        }
-        catch (err) {
-            console.error(err);
-            throw err;
-        }
-    };
-
-    //google sign-in
-    private async verifyGoogleIdToken(token: string) {
-        const ticket = await this.oauth2Client.verifyIdToken({
-            idToken: token,
-            audience: GOOGLE_CLIENT_ID
-        });
-
-        return ticket.getPayload();
-    }
-
-    //tokens
-    private checkToken(req: express.Request) {
-        let authHeader = req.get('authorization');
-        if (!authHeader)
-            throw new Error("401");
-
-        const token = authHeader.replace('Bearer ', '');
-        return jwt.verify(token, JWT_SECRET);
-    };
-
-    private createToken(user: any) {
-        return jwt.sign({
-            user
-        }, JWT_SECRET, { expiresIn: "2 days" });
-    };
 }

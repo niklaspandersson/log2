@@ -1,10 +1,10 @@
 import MongoDBService from "./MongoDBService";
-
+import IDBService from "./IDBService";
 import User from "../../common/models/user";
 import {IPost} from "../../common/models/post";
-import { ObjectID } from "bson";
+import { ObjectID, ObjectId } from "bson";
 
-export class DBService extends MongoDBService
+export class DBService extends MongoDBService implements IDBService
 {
     constructor(url:string, name:string) {
         super(url, name);
@@ -32,7 +32,11 @@ export class DBService extends MongoDBService
         return res.value;
     }
 
-    public getUser(email:string) {
+    public getUser(id:string) {
+        return this.guard(db => db.collection<User>("users").findOne(ObjectID.createFromHexString(id)));
+    }
+
+    public getUserByEmail(email:string) {
         return this.guard(db => db.collection<User>("users").findOne({email}));
     }
     public createUser(model:User, defaultModules:any) {

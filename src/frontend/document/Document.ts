@@ -1,15 +1,14 @@
-import LoginService from "../services/LoginService";
 import ModulesService from "../services/ModulesService";
 import User from "../../common/models/user";
 import Module from "../../common/models/module";
-import {Post, IPost} from "../../common/models/post";
+import {Post} from "../../common/models/post";
 import PostService from "../services/PostService";
 import {Moment} from "moment";
 import moment from "moment";
-import { userInfo } from "os";
+import AuthService from "../services/AuthService";
 
 export default class Document {
-    private loginService: LoginService;
+    private authService: AuthService;
     private modulesService: ModulesService;
     private postService: PostService;
 
@@ -23,6 +22,9 @@ export default class Document {
     public get HasPosts() { return this.posts != null; }
     public get Posts() { return this.posts; }
 
+    private onExternalUserChanged:(user:User) => void;
+
+    private allModules:Module[] = null;
 
     private modules:Module[] = null;
     public get Modules() { return this.modules; }
@@ -31,26 +33,34 @@ export default class Document {
         return this.posts && !!this.posts.find(p => this.Today.isSame(p.time, 'day'));        
     }
 
-    constructor() {
+    constructor(onUserChanged:(user:User) => void) {
+        this.onExternalUserChanged = onUserChanged;
+
         this.today = moment();
-        this.loginService = new LoginService("/api/login");
+
+        this.authService = new AuthService("/api");
+
         this.modulesService = new ModulesService("/api/modules");
+
         this.postService = new PostService("/api/posts");
+        this.postService.authService = this.authService;
     }
 
-    async init() {
-        let modules = await this.modulesService.getAll();
-        this.modules = this.getUserModules(modules);
-
-        return this.modules;
+    onUserChanged = (user:User) => {
+        this.user = user;
+        this.onExternalUserChanged(user);
+        this.modules = user ? this.getUserModules() : [];
     }
 
-    async login(idToken:string) {
-        let jwt = await this.loginService.login(idToken);
-        this.user = Document.ExtractUser(jwt);
-        this.postService.authToken = jwt;
+    init = async () => {
+        this.allModules = await this.modulesService.getAll();
 
-        return this.user;
+        if(this.authService.refreshToken)
+            this.onUserChanged(await this.authService.refresh());
+    }
+
+    async login(token:string) {
+        this.onUserChanged(await this.authService.login(token));
     }
 
     async getUserPosts() {
@@ -65,15 +75,8 @@ export default class Document {
         return new Post(await this.postService.updateModuleData(postId, mod, data));
     }
 
-    private getUserModules(appModules:Module[]) {
+    private getUserModules() {
         let userModules = this.user.modules.map(m => m[1] ? m[0] : null).filter(s => s !== null);
-        return appModules.filter(m => userModules.find(um => um === m.key) != null )
-    }
-
-    private static ExtractUser(jwt:string) {
-        let [header,payloadStr,sign] = jwt.split(".");
-        let payload:any = JSON.parse(atob(payloadStr));
-        return payload.user as User;
-
+        return this.allModules.filter(m => userModules.find(um => um === m.key) != null )
     }
 }

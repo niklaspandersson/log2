@@ -1,3 +1,5 @@
+import {IAuthService} from "./AuthService";
+
 type HTTPVerb = "GET" | "POST" | "PUT" | "PATCH" | "UPDATE" | "DELETE";
 
 export class FetchServiceError extends Error
@@ -12,20 +14,39 @@ export class FetchServiceError extends Error
 
 export class FetchService 
 {
-    private _authToken:string;
-    public get authToken() {
-        return this._authToken;
-    }
-    public set authToken(token:string) {
-        this._authToken = token;
-    }
+    private _authService:IAuthService;
+    public get authService():IAuthService { return this._authService; }
+    public set authService(auth:IAuthService) { this._authService = auth; }
 
     protected async doFetch(url:string, options?:Partial<RequestInit>) {
-        let res = await window.fetch(url, options);
-        if(!res.ok)
-            throw new FetchServiceError("Response code not ok", res);
-        let data = await res.json();
-        return data;
+
+        let res = await this.send(url, options);
+
+        if(!res.ok) {
+            if(res.status === 401 && this.authService && this.authService.accessToken) {
+                console.log("trying to refresh access token...");
+                //Try to refresh token
+                await this.authService.refresh();
+                console.log("access token refreshed!");
+                
+                //retry with new token
+                res = await this.send(url, options);
+                if(!res.ok)
+                    throw new FetchServiceError("Response code not ok", res);
+            }
+            else 
+                throw new FetchServiceError("Response code not ok", res);
+        }
+
+        return await res.json();
+    }
+
+    private async send(url:string, options?:Partial<RequestInit>) {
+        if(this.authService && this.authService.accessToken) {
+            options["headers"] = { ...options["headers"], "Authorization": `Bearer ${this.authService.accessToken}` };
+        }
+
+        return await window.fetch(url, options);
     }
 
     protected createOptions(method:HTTPVerb = "GET", data?:any, extras?:Partial<RequestInit>):Partial<RequestInit> {
@@ -42,11 +63,6 @@ export class FetchService
 
         if(extras)
             obj = { ...obj, ...extras};
-
-        if(this.authToken) {
-            obj["headers"] = { ...obj["headers"], "Authorization": `Bearer ${this.authToken}` };
-        }
-
 
         return obj;
     }    

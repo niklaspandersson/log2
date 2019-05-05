@@ -23,8 +23,6 @@ RUN chmod +x /var/app/start.sh
 USER node
 WORKDIR /var/app
 
-ENV NODE_ENV=production PORT=8000
-
 EXPOSE $PORT
 
-CMD ["/bin/sh", "./start.sh"]
+CMD ["node", "dist/backend/backend/main"]
