@@ -16,9 +16,6 @@ RUN npm run build:prod
 FROM node:11-alpine
 COPY --from=build /var/app/dist /var/app/dist
 COPY --from=build /var/app/node_modules /var/app/node_modules
-COPY --from=build /var/app/start.sh /var/app/start.sh
-
-RUN chmod +x /var/app/start.sh
 
 USER node
 WORKDIR /var/app
