@@ -9,7 +9,7 @@ RUN npm ci
 
 # build
 COPY . /var/app
-RUN npm run build:prod
+RUN npm run build
 
 
 # serve
