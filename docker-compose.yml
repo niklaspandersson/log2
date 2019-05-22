@@ -1,6 +1,0 @@
-log2:
-   image: 'log2-prod:latest'
-   restart: always
-   hostname: 'log.niklaspandersson.se'
-   ports:
-     - '8000:8000'
