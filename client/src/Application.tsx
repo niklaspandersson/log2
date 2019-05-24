@@ -20,15 +20,7 @@ function getPostTitle(date: moment.Moment) {
 
 export default function Application() {
 
-    const [state, document] = useDocument({
-        isMenuVisible: false,
-        isLoggedIn: false,
-        modules: [],
-        posts: null,
-        user: null,
-        hasPostToday: false,
-        view: "journal"
-    });
+    const [state, document] = useDocument();
 
     function getContents(): [IAppHeaderProps, JSX.Element] {
         let defaultHeaderProps: IAppHeaderProps = { menuIcon: "menu", menuAction: document.showMenu}
@@ -37,14 +29,14 @@ export default function Application() {
 
         else if (state.view === "journal") {
             if (state.posts)
-                return [defaultHeaderProps, <JournalView today={document.Today} hasPostToday={state.hasPostToday} posts={state.posts} />];
+                return [defaultHeaderProps, <JournalView today={state.today} hasPostToday={state.hasPostToday} posts={state.posts} />];
             else
                 return [defaultHeaderProps, null as JSX.Element];
         }
         else {
             let postHeaderProps: IAppHeaderProps = { menuIcon: "back", menuAction: document.showJournal }
             if (state.view === "new-post") {
-                let date = state.currentPost as Moment || document.Today;
+                let date = state.currentPost as Moment || state.today;
                 postHeaderProps.title = getPostTitle(date);
                 return [postHeaderProps, <CreateNewPostView modules={state.modules} />];
             }
@@ -53,6 +45,7 @@ export default function Application() {
 
             postHeaderProps.title = getPostTitle(currentPost.time);
             return [postHeaderProps, <PostView modules={state.modules} 
+                                            postId={currentPost && currentPost._id}
                                             initialValue={(currentPost && currentPost.data) || undefined} />]
         }
     }

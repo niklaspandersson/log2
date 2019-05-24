@@ -102,6 +102,7 @@ function Month(props:MonthProps) {
 
 function RenderCalendar(props:JournalViewProps) {
     const document = useContext(DocumentContext);
+    
     let handleCalendarClick = (date:Moment, post:Post) => 
     {
         if(post)
