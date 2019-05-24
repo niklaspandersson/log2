@@ -7,7 +7,7 @@ export interface IconProps{
     className?:string;
 };
 
-function Icon(props:IconProps) {
+export function Icon(props:IconProps) {
     return <div className={classnames(props.className, "icon", {"clickable": !!props.onClick})} onClick={props.onClick}><i className={`icon-${props.icon}`} /></div>
 }
 

@@ -1,6 +1,5 @@
 import {FetchService} from "./FetchService";
 import IUser from "../models/user";
-import { object } from "prop-types";
 
 export interface IAuthService
 {
@@ -25,17 +24,17 @@ export default class AuthService extends FetchService implements IAuthService
             this._refreshToken = storedRefreshToken;
     }
 
-    async login(idToken:string) {
+    async login(idToken:string):Promise<IUser> {
         return this.process(await this.doFetch(`${this.baseUrl}/login`, this.createOptions("POST", {"id_token": idToken})));
     }
 
-    async refresh() {
+    async refresh():Promise<IUser> {
         let opts = this.createOptions("POST");
         opts["headers"] = { ...opts["headers"], "Authorization": `Bearer ${this._refreshToken}` };
         return this.process(await this.doFetch(`${this.baseUrl}/refresh`, opts));
     }
 
-    private process(payload:any) {
+    private process(payload:any):IUser {
         this._accessToken = payload.accessToken;
         this._refreshToken = payload.refreshToken;
         window.localStorage.setItem("refreshToken", this._refreshToken);

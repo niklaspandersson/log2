@@ -1,15 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import {Post} from "../models/Post";
 import classnames from "classnames";
 import moment, { Moment } from "moment";
-import IViewProps from "./IViewProps";
+import {View} from "../components/Containers";
+import DocumentContext from "../contexts/DocumentContext";
 
-interface JournalViewProps extends IViewProps {
+interface JournalViewProps {
     posts: Post[];
     today: Moment;
     hasPostToday: boolean;
-    onSelectPost: (post:Post) => void;
-    onCreatePost: (date:Moment) => void;
 }
 
 function getPostText(data:any) {
@@ -102,12 +101,13 @@ function Month(props:MonthProps) {
 }
 
 function RenderCalendar(props:JournalViewProps) {
+    const document = useContext(DocumentContext);
     let handleCalendarClick = (date:Moment, post:Post) => 
     {
         if(post)
-            props.onSelectPost(post)
+            document.openPost(post)
         else 
-            props.onCreatePost(date);
+            document.showCreatePostWizard(date);
     }
     let last = props.today.clone().subtract(1, 'month');
     return  <>
@@ -117,14 +117,15 @@ function RenderCalendar(props:JournalViewProps) {
 }
 
 function RenderLogList(props:JournalViewProps) {
-    let posts = props.posts && props.posts.map(post => <PostListItem key={post._id} {...post} select={props.onSelectPost} />)
+    const document = useContext(DocumentContext);
+    let posts = props.posts && props.posts.map(post => <PostListItem key={post._id} {...post} select={document.openPost} />)
     return  <ul>
                 {posts}
             </ul>
 }
 
 export default function JournalView(props:JournalViewProps) {
-    return  <div className={classnames("journal", props.className)}>
+    return  <View name="journal">
                 <RenderCalendar {...props} />
-            </div>
+            </View>
 }

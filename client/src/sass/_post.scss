@@ -6,7 +6,7 @@
     }
 }
 
-.view.post {
+.post-view {
     display: flex;
     flex-flow: column nowrap;
 
@@ -26,7 +26,7 @@
     }
 }
 
-.create-post {
+.create-post-view {
     .module {
         //border: 1px solid gray;
         padding: 5px;

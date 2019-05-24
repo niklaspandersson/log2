@@ -1,24 +1,14 @@
-import ModulesService from "../services/ModulesService";
+import ModulesService from "./ModulesService";
 import User from "../models/user";
 import Module from "../models/module";
-import {IPost} from "../models/IPost";
 import {Post} from "../models/Post";
-import PostService from "../services/PostService";
+import PostService from "./PostService";
 import {Moment} from "moment";
 import moment from "moment";
-import AuthService from "../services/AuthService";
-import {IAppState} from "../Application";
+import AuthService from "./AuthService";
+import Observable from "../utils/Observable";
 
-interface IApp<S,P> {
-    state:S;
-    setState<K extends keyof S>(
-        state: ((prevState: Readonly<S>, props: Readonly<P>) => (Pick<S, K> | S | null)) | (Pick<S, K> | S | null),
-        callback?: () => void
-    ): void;
-
-}
-export default class Document {
-    private app:IApp<IAppState,{}>;
+export default class ApiFacade {
     private authService: AuthService;
     private modulesService: ModulesService;
     private postService: PostService;
@@ -26,46 +16,35 @@ export default class Document {
     private today:Moment = null;
     public get Today() { return this.today; }
 
-    private user:User = null;
+    private readonly user:Observable<User> = new Observable<User>(null);
     public get User() { return this.user; }
 
     private posts:Post[] = null;
     public get HasPosts() { return this.posts != null; }
     public get Posts() { return this.posts; }
 
-    private onExternalUserChanged:(user:User) => void;
-
-    private allModules:Module[] = null;
-
-    private modules:Module[] = null;
-    public get Modules() { return this.modules; }
+    private _modules:Module[] = null;
+    public get modules() { return this._modules; }
 
     public get HasPostToday() {
         return this.posts && !!this.posts.find(p => this.Today.isSame(p.time, 'day'));        
     }
 
-    constructor(app:IApp<IAppState,{}>) {
-        this.app = app;
-        //this.onExternalUserChanged = onUserChanged;
-
+    constructor() {
         this.today = moment();
 
         this.authService = new AuthService("/api");
-
         this.modulesService = new ModulesService("/api/modules");
-
         this.postService = new PostService("/api/posts");
         this.postService.authService = this.authService;
     }
 
-    onUserChanged = (user:User) => {
-        this.user = user;
-        this.onExternalUserChanged(user);
-        this.modules = user ? this.getUserModules() : [];
+    private onUserChanged = (user:User) => {
+        this.user.value = user;
     }
 
     init = async () => {
-        this.allModules = await this.modulesService.getAll();
+        this._modules = await this.modulesService.getAll();
 
         if(this.authService.refreshToken)
             this.onUserChanged(await this.authService.refresh());
@@ -85,10 +64,5 @@ export default class Document {
     }
     async updateModuleData(postId:string, mod:string, data:any) {
         return new Post(await this.postService.updateModuleData(postId, mod, data));
-    }
-
-    private getUserModules() {
-        let userModules = this.user.modules.map(m => m[1] ? m[0] : null).filter(s => s !== null);
-        return this.allModules.filter(m => userModules.find(um => um === m.key) != null )
     }
 }

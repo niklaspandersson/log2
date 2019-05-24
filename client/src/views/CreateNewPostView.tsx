@@ -1,12 +1,12 @@
-import React, {useState} from "react";
-import {Post} from "../../common/models/post";
+import React, {useState, useContext} from "react";
 import classnames from "classnames";
-import IViewProps from "./IViewProps";
-import Module, { SelectModuleSettings, LogModuleSettings } from "../../common/models/module";
+import Module, { SelectModuleSettings, LogModuleSettings } from "../models/module";
 import Icon from "../components/Icon";
 import useDebounce from "../utils/useDebounce";
+import {View} from "../components/Containers";
+import DocumentContext from "../contexts/DocumentContext";
 
-interface CreateNewPostViewProps extends IViewProps {
+interface CreateNewPostViewProps {
     modules: Module[];
     onComplete?: (data:any) => void;
 }
@@ -41,11 +41,10 @@ function LogModuleView(props:ModuleProps) {
         props.onSelect({body: p});
         setValue(p);    
     }
-    return  <>
-                <div className={classnames({"select": true, "has-value": !!value})}>
+    return     <div className={classnames({"select": true, "has-value": !!value})}>
                     { data.phrases.map((p,i) => <div key={i} className={classnames({"option": true, "selected": value === p})}><div className="clickable" onClick={doSelect.bind(null, p)}>{p}</div></div>)}
                 </div>                
-            </>
+
 }
 
 function createModuleComponent(model:Module, setter: (key:any, val:any) => void) {
@@ -58,6 +57,8 @@ function createModuleComponent(model:Module, setter: (key:any, val:any) => void)
         case "log":
             result = <LogModuleView {...model} onSelect={(val:any) => setter(model.key, val)} />
             break;
+        default:
+            break;
     }
 
     return result;
@@ -67,13 +68,14 @@ export default function CreateNewPostView(props:CreateNewPostViewProps) {
     let [data, setData] = useState({});
     let [hidden, setHidden] = useState({});
     let debouncedHidden = useDebounce(hidden, 500);
+    const document = useContext(DocumentContext);
 
     const setModuleData = (key:string, value:any) => {
         let newData:any = {...data};
         newData[key] = value;
 
         if(key === "log") {
-            props.onComplete(newData);
+            document.createNewPost(newData);
         }
         setData(newData);
 
@@ -89,9 +91,9 @@ export default function CreateNewPostView(props:CreateNewPostViewProps) {
                         })
                         .filter(m => !!m);
 
-    return  <div className={classnames("create-post", props.className)}>
+    return  <View name="create-post">
                 <ul>
                     {modules}
                 </ul>
-            </div>
+            </View>
 }

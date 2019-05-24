@@ -13,11 +13,11 @@ export class Post implements IPost {
         this.time = moment(this.date);
     }
 
-    _id?: string;
-    data: object;
-    date: string;
-    created?: string;
-    updated?: string;
-    user?: string;    
-    time: Moment;
+    readonly _id?: string;
+    readonly data: object;
+    readonly date: string;
+    readonly created?: string;
+    readonly updated?: string;
+    readonly user?: string;    
+    readonly time: Moment;
 }
