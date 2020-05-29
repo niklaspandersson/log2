@@ -1,4 +1,4 @@
-import { useState, useEffect, useReducer, useMemo } from "react";
+import { useRef, useEffect, useReducer, useMemo } from "react";
 import ApiFacade from  "../services/ApiFacade";
 import { Post } from "../models/Post";
 import moment, { Moment } from "moment";
@@ -25,33 +25,44 @@ function appReducer(state:IAppState, action:{type:string, post?:Post, date?:Mome
         return {...state, ...values};
     }
     
+    let change: Partial<IAppState>|null = null;
     switch(action.type) {
         case 'update-user':
-            return newState({user: action.user, isLoggedIn: !!action.user, isMenuVisible: false, posts: action.posts, modules: action.modules, view: action.hasPostToday ? "journal" : "new-post"});
+          change = {user: action.user, isLoggedIn: !!action.user, isMenuVisible: false, posts: action.posts, modules: action.modules, view: action.hasPostToday ? "journal" : "new-post"};
+          break;
         case 'show-menu':
-            return newState({isMenuVisible: true });
+          change = {isMenuVisible: true };
+          break;
         case 'hide-menu':
-            return newState({isMenuVisible: false });
+          change = {isMenuVisible: false };
+          break;
         case 'show-journal':
-            return newState({view: "journal", currentPost: null });
+          change = {view: "journal", currentPost: null };
+          break;
         case 'add-post':
-            return newState({posts: [...state.posts, action.post]});
+          change = {posts: [...state.posts, action.post]};
+          break;
         case 'open-post':
-            return newState({currentPost: action.post, view: action.post._id });
+          change = {currentPost: action.post, view: action.post._id };
+          break;
         case 'save-post':
-            {
-                let posts = [...state.posts];
-                const index = posts.findIndex(p => p._id === action.post._id);
-                posts[index] = action.post;
-                return newState({posts});
+          {
+              let posts = [...state.posts];
+              const index = posts.findIndex(p => p._id === action.post._id);
+              posts[index] = action.post;
+              change = {posts};
+              break;
             }
 
         case 'show-create-post':
-            return newState({currentPost: action.date, view: "new-post" });
+          change = {currentPost: action.date, view: "new-post" };
+          break;
 
         default:
             throw new Error('AppReducer - Invalid action type');
     }
+
+    return newState(change);
 }
 
 export interface IDocument {
@@ -63,7 +74,9 @@ export interface IDocument {
     createNewPost: (data:any) => Promise<Post>,
     saveLog: (id:string, data:any) => Promise<Post>,
     saveModule: (postId:string, key:string, data:any) => Promise<Post>,
-    showCreatePostWizard: (date:Moment) => void
+    showCreatePostWizard: (date:Moment) => void,
+    loadPrevMonth: () => void,
+    loadNextMonth: () => void
 };
 
 export default function useDocument():[Readonly<IAppState>,IDocument] {
@@ -78,7 +91,8 @@ export default function useDocument():[Readonly<IAppState>,IDocument] {
         view: "journal"
     });
     
-    const [api] = useState(new ApiFacade());
+    const apiRef = useRef(new ApiFacade());
+    const api = apiRef.current;
     useEffect(() => {
         api.init();
         api.User.removeAllListeners();
@@ -118,6 +132,8 @@ export default function useDocument():[Readonly<IAppState>,IDocument] {
                 dispatch({type:'save-post', post});
                 return post;
             },
+            loadPrevMonth: () => dispatch({type:'load-prev-month'}),
+            loadNextMonth: () => dispatch({type:'load-next-month'}),
             showCreatePostWizard: (date:Moment) => dispatch({type: 'show-create-post', date})
         };
     }, [api, dispatch, state.today, state.currentPost]);
