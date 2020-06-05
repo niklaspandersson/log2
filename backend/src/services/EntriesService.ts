@@ -14,7 +14,6 @@ export class EntriesService {
     if(month) values.push(month);
 
     const sql = `SELECT * FROM entries WHERE user_id = ? ${year ? 'AND YEAR(date) = ?': ''} ${month ? 'AND MONTH(date) = ?' : ''} AND deleted IS NULL ORDER BY date ASC`;
-    console.log(sql);
     return await this.db.query(sql, values);
   }
   private async getEntryById(id:number) {
@@ -24,8 +23,6 @@ export class EntriesService {
 
   async createEntry(entry:Entry) {
     const dbRes = await this.db.query('INSERT INTO entries SET ?', [entry]);
-    console.log('inserted entry. dbRes:');
-    console.dir(dbRes);
     return await this.getEntryById(dbRes.insertId);
     
   }
@@ -34,7 +31,7 @@ export class EntriesService {
     delete entry.id;
     delete entry.user_id;
     const sql = 'UPDATE entries SET ? WHERE user_id = ? AND id = ?'
-    const dbRes = await this.db.query(sql, [entry, user_id, id]);
+    await this.db.query(sql, [entry, user_id, id]);
     return  await this.getEntryById(id!);
   }
 

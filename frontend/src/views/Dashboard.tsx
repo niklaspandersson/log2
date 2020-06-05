@@ -47,7 +47,6 @@ export const Dashboard:React.FC<DashboardProps> = ({navigate}) => {
 
   useEffect(() => {
     (async function() {
-      console.log("getting initial month")
       const now = new Date();
       await store.selectMonth(now);
       store.selectDate(now);

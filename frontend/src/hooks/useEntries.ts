@@ -39,8 +39,6 @@ function entriesReducer(prevState:EntriesState, action: EntriesReducerAction) {
     case Actions.selectDate:
       {
         const date = moment(action.selectedDate!).startOf('day').toDate();
-
-        console.log("select date " + date.toString())
         const entry = prevState.entries[date.getDate()];
         result = { ...prevState, selectedDate: date, current: entry || { text: '', title: '', date } };
         break;
@@ -57,8 +55,6 @@ function entriesReducer(prevState:EntriesState, action: EntriesReducerAction) {
         break;
       }
   }
-
-  console.dir(result)
   return result;
 }
 
@@ -69,7 +65,6 @@ export class EntriesDispatcher {
   public get state() { return global_state };
 
   public async selectMonth(date:Date) {
-    console.log("getting month " + date.toString())
     let entries = await services.entriesService.getByMonth(date.getFullYear(), date.getMonth()+1);
     entries = entries.reduce((agg, e, i) => {
       if(e.date) {

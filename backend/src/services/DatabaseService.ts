@@ -54,7 +54,6 @@ export class DatabaseService {
 
 function query(conn:mysql.Pool|mysql.Connection, sql:string, values:any) {
   return new Promise<any>((resolve, reject) => {
-    console.log(mysql.format(sql, values))
     conn.query(sql, values, (err, result) => {
       if(err)
         reject(err);
