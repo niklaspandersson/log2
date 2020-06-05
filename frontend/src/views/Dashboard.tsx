@@ -76,7 +76,7 @@ const Editor:React.FC<{date: Date, store:EntriesDispatcher}> = ({date, store}) =
 
   return (
     <div className="widget editor">
-      <div className="header"><span className="date">{date.toDateString()}</span></div>
+      <div className="header"><span className="date">{moment(date).format("DD MMMM")}</span></div>
       <textarea value={text} onChange={ev => setText(ev.target.value)}></textarea>
     </div>)
 }
