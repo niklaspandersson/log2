@@ -1,0 +1,14 @@
+FROM node:12-alpine
+
+WORKDIR /app
+COPY backend/package*.json ./backend/
+
+WORKDIR /app/backend
+RUN npm install
+
+WORKDIR /app
+COPY backend/. ./backend/
+COPY common/. ./common/
+
+WORKDIR /app/backend
+CMD [ "npm", "start" ]

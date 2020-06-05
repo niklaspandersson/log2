@@ -1,4 +1,0 @@
-{"_id":{"$oid":"5c93597eb9cab49432ed39e3"},"key":"weather","title":"Hur var vädret?","type":"select","data":{"options":["sun","cloud-sun","cloud","drizzle","rain","cloud-flash","snow","snow-heavy"]}}
-{"_id":{"$oid":"5c93597eb9cab49432ed39e4"},"key":"log","type":"log","data":{"phrases":["Vad har jag gjort?","Vad har jag sett?","Hur har det gått?","Hur känns det?","Vad har hänt?","Vad har jag hört?","den där idén...",""]}}
-{"_id":{"$oid":"5c93597eb9cab49432ed39e5"},"key":"books","type":"multi-select","title":"mina böcker","data":{"annotated":true,"options":["started","finished"]}}
-{"_id":{"$oid":"5c93597eb9cab49432ed39e6"},"key":"mood","title":"Vad är känslan?","type":"select","data":{"options":["grin","happy","sleep","unhappy","cry","angry"]}}

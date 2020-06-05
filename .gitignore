@@ -1,8 +1,4 @@
 dist
 node_modules
-src/sass/fontello/css
-src/sass/fontello/font
-src/sass/fontello/*.txt
-src/sass/fontello/*.html
-conf
 .env
+docker-compose.yml

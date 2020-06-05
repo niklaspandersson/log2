@@ -1,0 +1,13 @@
+.app {
+  display: flex;
+}
+.view {
+  flex: 1 0 0;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+}

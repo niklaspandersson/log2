@@ -1,9 +1,9 @@
-export default interface User {
-    _id?: string;
-    fullName: string;
-    name: string;
-    pictureUrl:string;
-    email:string;
+export type User = {
+  id: number;
+  googleId: string;
+}
 
-    modules: [[string, boolean]];
+export type UserInfo = {
+  id: number;
+  name: string;
 }
