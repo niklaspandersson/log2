@@ -8,11 +8,12 @@ $input-background: white;
 
   .header {
     padding: 5px 0;
-   align-self: center;
-   font-weight: bold;
+    align-self: center;
+    font-weight: bold;
   }
 
   textarea {
+    background: transparent;
     flex: 1;
     resize: none;
     outline: none;
@@ -23,7 +24,6 @@ $input-background: white;
   }
   input, textarea {
     font-size: 16px;
-    background-color: $input-background;
   }
 }
 
