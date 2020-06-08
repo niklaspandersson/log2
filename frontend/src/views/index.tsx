@@ -10,5 +10,3 @@ const View : React.FC<Props> = ({children, name}) => {
 }
 
 export default View;
-
-export type ViewTypes = "dashboard" | "entry";

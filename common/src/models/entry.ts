@@ -1,6 +1,6 @@
 export type Entry = {
     id?: number;
-    user_id: number;
+    user_id?: number;
     title?: string;
     text: string;
 

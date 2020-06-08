@@ -1,0 +1,12 @@
+svg.radial-progress {
+  transform: rotate(-90deg);
+  circle.fg {
+    stroke: rgb(108, 197, 108);
+    fill: transparent;
+  }
+
+  circle.bg {
+    stroke: #e6e6e6;
+    fill: transparent;
+  }
+}
