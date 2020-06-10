@@ -1,8 +1,10 @@
 import * as express from "express";
+import multer from "multer";
 import { DatabaseService } from "../services/DatabaseService";
 import { EntriesService } from "../services/EntriesService";
 import { AuthService, AuthTokenPayload } from "../services/AuthService";
 import { Entry } from "../models/entry";
+import { Image } from "../models/image";
 
 export function entriesApi(db:DatabaseService, auth:AuthService) {
   const service = new EntriesService(db);
@@ -79,6 +81,15 @@ export function entriesApi(db:DatabaseService, auth:AuthService) {
         res.json(dbRes);
       }
     });
+
+    router.route('/:id/images')
+      .get(async (req, res) => {
+        console.log("getting all images for entry with id " + parseInt(req.params.id))
+
+      })
+      .post(async (req, res) => {
+        console.log("creating image for entry with id " + parseInt(req.params.id))
+      });
 
   return router;
 }
