@@ -36,6 +36,12 @@ app.use("/api/entries", entriesApi(db, auth));
 //app.use("/api/projects", projectsApi(db, auth));
 app.use("/api/auth", authApi(loginService, auth, "/api/auth"));
 
+if(Config.IMAGE_PATH) {
+  console.log(`Serving images from ${Config.IMAGE_PATH}`);
+  const s = createStatic(Config.IMAGE_PATH);
+  app.use('/images', s);
+}
+
 if(Config.PUBLIC_HTML) {
   console.log(`Serving static files from ${Config.PUBLIC_HTML}`);
   const s = createStatic(Config.PUBLIC_HTML);

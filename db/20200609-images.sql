@@ -14,7 +14,7 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `images` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `entry_id` int(11) NOT NULL,
-  `filename` varchar(255) NOT NULL´
+  `filename` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `entry_id_k` (`entry_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_swedish_ci;

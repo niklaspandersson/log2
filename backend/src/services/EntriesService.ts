@@ -19,7 +19,12 @@ export class EntriesService {
   private async getEntryById(id:number) {
     const sql = 'SELECT * FROM entries WHERE id = ?';
     return (await this.db.query(sql, id))?.[0];
-  }  
+  }
+
+  async checkEntryUserId(id:number, user_id:number) {
+    const sql = 'SELECT id FROM entries WHERE id = ? AND user_id = ?';
+    return !!((await this.db.query(sql, [id, user_id]))?.[0]); 
+  }
 
   async createEntry(entry:Entry) {
     const dbRes = await this.db.query('INSERT INTO entries SET ?', [entry]);

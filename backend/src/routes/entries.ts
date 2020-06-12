@@ -2,12 +2,26 @@ import * as express from "express";
 import multer from "multer";
 import { DatabaseService } from "../services/DatabaseService";
 import { EntriesService } from "../services/EntriesService";
+import { ImagesService } from "../services/ImagesService";
 import { AuthService, AuthTokenPayload } from "../services/AuthService";
 import { Entry } from "../models/entry";
 import { Image } from "../models/image";
+import * as config from "../config";
+import path from "path";
+
+const storage = multer.diskStorage({
+  destination: (req,file,cb) => {
+    cb(null, config.IMAGE_PATH);
+  },
+  filename: (req,file,cb) => {
+    cb(null, `${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`)
+  }
+})
+const upload = multer({ storage })
 
 export function entriesApi(db:DatabaseService, auth:AuthService) {
   const service = new EntriesService(db);
+  const imagesService = new ImagesService(db);
 
   const router = express.Router();
   router.use(auth.authMiddleware);
@@ -84,11 +98,35 @@ export function entriesApi(db:DatabaseService, auth:AuthService) {
 
     router.route('/:id/images')
       .get(async (req, res) => {
-        console.log("getting all images for entry with id " + parseInt(req.params.id))
+        const auth:AuthTokenPayload = res.locals.auth;
+        const user_id = auth.user.id;
+        const id = parseInt(req.params.id);
 
+        if(!user_id || !service.checkEntryUserId(id, user_id))
+          res.sendStatus(401);
+        else {
+          const dbRes = await imagesService.getImagesByEntryId(id);
+          console.log("getting all images for entry with id " + parseInt(req.params.id))
+          res.json(dbRes);
+        }
       })
-      .post(async (req, res) => {
-        console.log("creating image for entry with id " + parseInt(req.params.id))
+      .post(upload.single('image'), async (req, res) => {
+        const auth:AuthTokenPayload = res.locals.auth;
+        const user_id = auth.user.id;
+        const id = parseInt(req.params.id);
+
+        if(!user_id || !service.checkEntryUserId(id, user_id))
+          res.sendStatus(401);
+        else {
+          const image:Image = {
+            filename: req.file.filename,
+            entry_id: id
+          };
+  
+          const dbRes = await imagesService.createImage(image);
+          console.log("creating image for entry with id " + id)
+          res.json(dbRes);
+        }
       });
 
   return router;

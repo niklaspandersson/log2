@@ -12,8 +12,8 @@ export class ImagesService {
     const sql = `SELECT * FROM images WHERE entry_id = ?`;
     return await this.db.query(sql, [entryId]);
   }
-  async createEntry(image:Image):Promise<Image> {
-    const dbRes = await this.db.query('INSERT INTO entries SET ?', [image]);
+  async createImage(image:Image):Promise<Image> {
+    const dbRes = await this.db.query('INSERT INTO images SET ?', [image]);
     return {...image, id: dbRes.insertId as number };
   }
 }

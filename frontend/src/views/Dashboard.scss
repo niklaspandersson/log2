@@ -19,12 +19,24 @@ $input-background: white;
       justify-self: center;
     }
 
+    .hide {
+      display: none;
+    }
+
     .progress {
       grid-row: 1 / 1;
       grid-column: 1 / 1;
       align-self: center;
       justify-self: start;
     }
+
+    .upload {
+      grid-row: 1 / 1;
+      grid-column: 1 / 1;
+      align-self: center;
+      justify-self: end;
+      cursor: pointer;
+    }    
   }
 
   textarea {

@@ -10,6 +10,7 @@ import { useEntries, EntriesDispatcher } from "../hooks/useEntries";
 import { useDebounce } from "../hooks/useDebounce";
 import { RadialProgress } from "../components/RadialProgress";
 import { Entry } from "../models/entry";
+import { Image } from "../models/image";
 
 const DailyGoal = 100;
 
@@ -80,10 +81,18 @@ const Stats:React.FC<{todaysEntry:Entry|undefined, onClick?:()=>void}> = ({today
 const Editor:React.FC<{date: Date, store:EntriesDispatcher}> = ({date, store}) => {
   const [text, setText] = useState('');
   const [title, setTitle] = useState('');
+  const [images, setImages] = useState([] as Image[])
 
   useEffect(() => {
     setText(store.state.current?.text || "");
     setTitle(store.state.current?.title || "");
+    const fetchImages = async () => {
+      const id = store.state.current?.id;
+      id && setImages(await store.getImages(id));
+    };
+    fetchImages();
+
+    return () => setImages([]);
   }, [date]);
   
   const debouncedText = useDebounce(text, 750);
@@ -91,12 +100,22 @@ const Editor:React.FC<{date: Date, store:EntriesDispatcher}> = ({date, store}) =
     store.saveCurrentEntry(text, title);
   }, [debouncedText]);
 
+  function uploadImage() {
+    const id = store.state.current?.id;
+    const fileInput = document.getElementById("imageUpload") as HTMLInputElement;
+    id && store.uploadImage(id, fileInput.files?.[0])
+  }
   const count = text.split(/\s/).length-1;
   const progress =  Math.min(1, count / DailyGoal);
 
   return (
     <div className="widget editor">
-      <div className="header"><RadialProgress className="progress" radius={12} stroke={8} progress={progress} /> <span className="date">{moment(date).format("DD MMMM")}</span></div>
+      <div className="header">
+        <RadialProgress className="progress" radius={12} stroke={8} progress={progress} /> 
+        <span className="date">{moment(date).format("DD MMMM")}</span>
+        <input type="file" name="imageUpload" id="imageUpload" className="hide" onChange={uploadImage} /> 
+        <label htmlFor="imageUpload" className="upload">📷</label>
+      </div>
       <textarea value={text} onChange={ev => setText(ev.target.value)}></textarea>
     </div>)
 }

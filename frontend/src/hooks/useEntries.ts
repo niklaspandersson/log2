@@ -108,6 +108,13 @@ export class EntriesDispatcher {
     this.dispatcher({type: Actions.selectDate, selectedDate: date });
   }
 
+  public getImages(entry_id:number) {
+    return services.entriesService.getImages(entry_id);
+  }
+  public uploadImage(entry_id:number, file:File|undefined) {
+    return services.entriesService.uploadImage(entry_id, file);
+  }
+
   public async saveCurrentEntry(text:string, title:string) {
     if(text && ((this.state.current?.text || "") !== text || (this.state.current?.title || "") !== title)) {
       const entry = await services.entriesService.save({...this.state.current!, text, title });

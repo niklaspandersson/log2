@@ -6,6 +6,7 @@ export const DB_PASSWORD = getEnv("DB_PASSWORD");
 
 export const GOOGLE_CLIENT_ID = getEnv("GOOGLE_CLIENT_ID");
 export const JWT_SECRET = getEnv("JWT_SECRET");
+export const IMAGE_PATH = getEnv("IMAGE_PATH");
 
 export const PUBLIC_HTML = getEnv("PUBLIC_HTML", false);
 export const PORT = parseInt(getEnv("PORT", false) || "3000");
