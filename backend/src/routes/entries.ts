@@ -1,20 +1,22 @@
 import * as express from "express";
 import multer from "multer";
+import Jimp from "jimp";
 import { DatabaseService } from "../services/DatabaseService";
 import { EntriesService } from "../services/EntriesService";
 import { ImagesService } from "../services/ImagesService";
 import { AuthService, AuthTokenPayload } from "../services/AuthService";
 import { Entry } from "../models/entry";
 import { Image } from "../models/image";
-import * as config from "../config";
-import path from "path";
+import * as Config from "../config";
+import Path from "path";
+import { appendToFilename } from "../utils/fileutils";
 
 const storage = multer.diskStorage({
   destination: (req,file,cb) => {
-    cb(null, config.IMAGE_PATH);
+    cb(null, Config.IMAGE_PATH);
   },
   filename: (req,file,cb) => {
-    cb(null, `${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`)
+    cb(null, `${Date.now()}-${Math.round(Math.random() * 1E9)}${Path.extname(file.originalname)}`)
   }
 })
 const upload = multer({ storage })
@@ -106,7 +108,6 @@ export function entriesApi(db:DatabaseService, auth:AuthService) {
           res.sendStatus(401);
         else {
           const dbRes = await imagesService.getImagesByEntryId(id);
-          console.log("getting all images for entry with id " + parseInt(req.params.id))
           res.json(dbRes);
         }
       })
@@ -123,11 +124,18 @@ export function entriesApi(db:DatabaseService, auth:AuthService) {
             entry_id: id
           };
   
-          const dbRes = await imagesService.createImage(image);
-          console.log("creating image for entry with id " + id)
-          res.json(dbRes);
+          const thumbP = createThumbs(req.file.path);
+          const dbResP = imagesService.createImage(image);
+          const results = await Promise.all([thumbP, dbResP]);
+          res.json(await dbResP);
         }
       });
 
   return router;
+}
+
+async function createThumbs(path:string) {
+  const image = await Jimp.read(path);
+  await image.resize(Jimp.AUTO, Config.IMAGE_MID_SIZE).write(appendToFilename(path, "-m"));
+  await image.resize(Jimp.AUTO, Config.IMAGE_THUMB_SIZE).write(appendToFilename(path, "-t"));
 }

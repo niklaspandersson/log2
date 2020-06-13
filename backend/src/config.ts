@@ -11,6 +11,9 @@ export const IMAGE_PATH = getEnv("IMAGE_PATH");
 export const PUBLIC_HTML = getEnv("PUBLIC_HTML", false);
 export const PORT = parseInt(getEnv("PORT", false) || "3000");
 
+export const IMAGE_THUMB_SIZE = parseInt(getEnv("THUMB_SIZE", false) || "100");
+export const IMAGE_MID_SIZE = parseInt(getEnv("THUMB_SIZE", false) || "355");
+
 function getEnv(name:string, required:boolean = true) {
   const value = process.env[name];
   if(required && !value)

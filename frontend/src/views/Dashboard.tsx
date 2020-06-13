@@ -11,6 +11,7 @@ import { useDebounce } from "../hooks/useDebounce";
 import { RadialProgress } from "../components/RadialProgress";
 import { Entry } from "../models/entry";
 import { Image } from "../models/image";
+import { appendToFilename } from "../utils/fileutils";
 
 const DailyGoal = 100;
 
@@ -81,7 +82,7 @@ const Stats:React.FC<{todaysEntry:Entry|undefined, onClick?:()=>void}> = ({today
 const Editor:React.FC<{date: Date, store:EntriesDispatcher}> = ({date, store}) => {
   const [text, setText] = useState('');
   const [title, setTitle] = useState('');
-  const [images, setImages] = useState([] as Image[])
+  const [images, setImages] = useState<Image[]|null>(null);
 
   useEffect(() => {
     setText(store.state.current?.text || "");
@@ -92,7 +93,7 @@ const Editor:React.FC<{date: Date, store:EntriesDispatcher}> = ({date, store}) =
     };
     fetchImages();
 
-    return () => setImages([]);
+    return () => setImages(null);
   }, [date]);
   
   const debouncedText = useDebounce(text, 750);
@@ -117,5 +118,8 @@ const Editor:React.FC<{date: Date, store:EntriesDispatcher}> = ({date, store}) =
         <label htmlFor="imageUpload" className="upload">📷</label>
       </div>
       <textarea value={text} onChange={ev => setText(ev.target.value)}></textarea>
+      <ul className="images">
+        {images?.map(img => <img src={`/images/${appendToFilename(img.filename, "-t")}`} />)}
+      </ul>
     </div>)
 }
