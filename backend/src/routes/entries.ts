@@ -136,10 +136,17 @@ export function entriesApi(db:DatabaseService, auth:AuthService) {
 }
 
 async function processImage(path:string) {
-  const imgData = await rotate(path, { quality: 85 });
-  
-  const image = await Jimp.read(imgData.buffer);
-  await image.write(path);
+  let image:Jimp|null = null;
+  try{
+    const imgData = await rotate(path, { quality: 85 });
+    image = await Jimp.read(imgData.buffer);
+    await image.write(path);
+  }
+  catch(err) {}
+
+  if(!image)
+    image = await Jimp.read(path);
+
   await image.resize(Jimp.AUTO, Config.IMAGE_MID_SIZE).write(appendToFilename(path, "-m"));
   await image.resize(Jimp.AUTO, Config.IMAGE_THUMB_SIZE).write(appendToFilename(path, "-t"));
 }
