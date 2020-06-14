@@ -142,7 +142,9 @@ async function processImage(path:string) {
     image = await Jimp.read(imgData.buffer);
     await image.write(path);
   }
-  catch(err) {}
+  catch(err) {
+    console.warn(`Failed to autorotate file: ${path}: ${err.message}`)
+  }
 
   if(!image)
     image = await Jimp.read(path);
