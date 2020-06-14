@@ -1,6 +1,7 @@
 import * as express from "express";
 import multer from "multer";
 import Jimp from "jimp";
+import { rotate } from "jpeg-autorotate";
 import { DatabaseService } from "../services/DatabaseService";
 import { EntriesService } from "../services/EntriesService";
 import { ImagesService } from "../services/ImagesService";
@@ -124,7 +125,7 @@ export function entriesApi(db:DatabaseService, auth:AuthService) {
             entry_id: id
           };
   
-          const thumbP = createThumbs(req.file.path);
+          const thumbP = processImage(req.file.path);
           const dbResP = imagesService.createImage(image);
           const results = await Promise.all([thumbP, dbResP]);
           res.json(await dbResP);
@@ -134,8 +135,11 @@ export function entriesApi(db:DatabaseService, auth:AuthService) {
   return router;
 }
 
-async function createThumbs(path:string) {
-  const image = await Jimp.read(path);
+async function processImage(path:string) {
+  const imgData = await rotate(path, { quality: 85 });
+  
+  const image = await Jimp.read(imgData.buffer);
+  await image.write(path);
   await image.resize(Jimp.AUTO, Config.IMAGE_MID_SIZE).write(appendToFilename(path, "-m"));
   await image.resize(Jimp.AUTO, Config.IMAGE_THUMB_SIZE).write(appendToFilename(path, "-t"));
 }

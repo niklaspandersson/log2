@@ -12,6 +12,7 @@
   "devDependencies": {
     "@types/cookie-parser": "^1.4.2",
     "@types/express": "^4.17.6",
+    "@types/jpeg-autorotate": "^5.0.0",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/multer": "^1.4.3",
     "@types/mysql": "^2.15.13",
@@ -26,6 +27,7 @@
     "express": "^4.17.1",
     "google-auth-library": "^6.0.0",
     "jimp": "^0.13.0",
+    "jpeg-autorotate": "^6.0.0",
     "jsonwebtoken": "^8.5.1",
     "multer": "^1.4.2",
     "mysql": "^2.18.1"

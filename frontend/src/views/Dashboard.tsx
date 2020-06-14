@@ -101,11 +101,17 @@ const Editor:React.FC<{date: Date, store:EntriesDispatcher}> = ({date, store}) =
     store.saveCurrentEntry(text, title);
   }, [debouncedText]);
 
-  function uploadImage() {
+  async function uploadImage() {
     const id = store.state.current?.id;
     const fileInput = document.getElementById("imageUpload") as HTMLInputElement;
-    id && store.uploadImage(id, fileInput.files?.[0])
+    if(id) {
+      const img = (await store.uploadImage(id, fileInput.files?.[0]) as Image);
+      if(img && img?.id)
+        setImages([...(images || []), img]);
+    }
+
   }
+
   const count = text.split(/\s/).length-1;
   const progress =  Math.min(1, count / DailyGoal);
 
@@ -114,7 +120,7 @@ const Editor:React.FC<{date: Date, store:EntriesDispatcher}> = ({date, store}) =
       <div className="header">
         <RadialProgress className="progress" radius={12} stroke={8} progress={progress} /> 
         <span className="date">{moment(date).format("DD MMMM")}</span>
-        <input type="file" name="imageUpload" id="imageUpload" className="hide" onChange={uploadImage} /> 
+        <input type="file" accept="image/jpeg" name="imageUpload" id="imageUpload" className="hide" onChange={uploadImage} /> 
         <label htmlFor="imageUpload" className="upload">📷</label>
       </div>
       <textarea value={text} onChange={ev => setText(ev.target.value)}></textarea>
