@@ -149,6 +149,6 @@ async function processImage(path:string) {
   if(!image)
     image = await Jimp.read(path);
 
-  await image.resize(Jimp.AUTO, Config.IMAGE_MID_SIZE).write(appendToFilename(path, "-m"));
+  await image.resize(Config.IMAGE_MID_SIZE, Jimp.AUTO).write(appendToFilename(path, "-m"));
   await image.resize(Jimp.AUTO, Config.IMAGE_THUMB_SIZE).write(appendToFilename(path, "-t"));
 }
