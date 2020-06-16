@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
+import classnames from "classnames";
 
 import "./Dashboard.scss";
 
@@ -82,7 +83,12 @@ const Stats:React.FC<{todaysEntry:Entry|undefined, onClick?:()=>void}> = ({today
 const Editor:React.FC<{date: Date, store:EntriesDispatcher}> = ({date, store}) => {
   const [text, setText] = useState('');
   const [title, setTitle] = useState('');
+  const [editing, setEditing] = useState(false);
   const [images, setImages] = useState<Image[]|null>(null);
+
+  useEffect(() => {
+    setEditing(false);
+  }, [date]);
 
   useEffect(() => {
     setText(store.state.current?.text || "");
@@ -116,16 +122,22 @@ const Editor:React.FC<{date: Date, store:EntriesDispatcher}> = ({date, store}) =
   const progress =  Math.min(1, count / DailyGoal);
 
   return (
-    <div className="widget editor">
+    <div className={classnames({"widget": true, "editor": true, "editing": editing })}>
       <div className="header">
         <RadialProgress className="progress" radius={12} stroke={8} progress={progress} /> 
         <span className="date">{moment(date).format("DD MMMM")}</span>
         <input type="file" accept="image/jpeg" name="imageUpload" id="imageUpload" className="hide" onChange={uploadImage} /> 
         <label htmlFor="imageUpload" className="upload">📷</label>
       </div>
-      <textarea value={text} onChange={ev => setText(ev.target.value)}></textarea>
-      <ul className="images">
-        {images?.map(img => <img src={`/images/${appendToFilename(img.filename, "-t")}`} />)}
-      </ul>
+      <div className="entry">
+        {
+          editing 
+          ? <textarea autoFocus={true} value={text} onChange={ev => setText(ev.target.value)}></textarea>
+          : <div className="linebreaks" onClick={() => setEditing(true)}>{text}</div>
+        }
+        <ul className="images">
+          {images?.map((img, i) => <img key={i} src={`/images/${appendToFilename(img.filename, editing ? "-t" : "-m")}`} />)}
+        </ul>
+      </div>
     </div>)
 }

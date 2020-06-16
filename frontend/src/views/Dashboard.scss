@@ -39,6 +39,19 @@ $input-background: white;
     }    
   }
 
+  .entry {
+    overflow: scroll;
+    display: flex;
+    flex: 1 0 auto;
+    flex-flow: column nowrap;
+  }
+
+  .linebreaks {
+    flex: 1 0 auto;
+    margin: 3px;
+    white-space: pre-line;
+  }
+
   textarea {
     background: transparent;
     flex: 1;
@@ -55,15 +68,23 @@ $input-background: white;
 
   .images {
     display: flex;
-    flex-flow: row nowrap;
+    flex-flow: column nowrap;
     justify-content: center;
-    overflow-y: scroll;
 
     img {
       margin: 6px 3px;
+    }
+  }
+
+  &.editing .images {
+    flex-flow: row nowrap;
+    overflow-y: scroll;
+
+    img {
       height: 50px;
     }
   }
+
 }
 
 .stats {

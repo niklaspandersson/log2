@@ -71,8 +71,9 @@ function entriesReducer(prevState:EntriesState, action: EntriesReducerAction) {
         newArray[day] = newEntry;
         result = {...prevState, current: newEntry, entries: newArray };
 
-        if(moment(action.selectedDate!).isSame(new Date(), "day"))
+        if(moment(prevState.selectedDate!).isSame(new Date(), "day")) {
           result.todaysEntry = newEntry;
+        }
         break;
       }
   }
