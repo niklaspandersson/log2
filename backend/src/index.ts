@@ -39,10 +39,7 @@ app.use("/api/auth", authApi(loginService, auth, "/api/auth"));
 if(Config.IMAGE_PATH) {
   console.log(`Serving images from ${Config.IMAGE_PATH}`);
   const s = createStatic(Config.IMAGE_PATH);
-  app.use('/images', (req, res, next) => {
-    console.log(req.path);
-    next();
-  }, s);
+  app.use('/images', s);
 }
 
 if(Config.PUBLIC_HTML) {
